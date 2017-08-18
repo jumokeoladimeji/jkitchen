@@ -21,3 +21,24 @@
 * Better for horizontal scaling
 * They are fast and reduce latency when there is frequent data read and write
 
+
+
+### Installing dependencies
+Run
+```
+1. npm install
+2. bower install
+```
+
+### Running tests
+
+Front End Test
+
+```
+npm test
+```
+
+Back End Test
+```
+gulp server-test 
+```
