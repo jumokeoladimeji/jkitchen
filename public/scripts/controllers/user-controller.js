@@ -1,0 +1,1 @@
+app.controller('UserCtlr', function ($http, $scope) {});
