@@ -1,0 +1,22 @@
+{
+  "name": "jkitchen",
+  "version": "0.0.0",
+  "description": "An app for ordering for meals.",
+  "authors": [
+    "jumoke"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/andela-joladimeji/jkitchen",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-mocks": "^1.6.2",
+    "angular": "^1.6.2"
+  }
+}
