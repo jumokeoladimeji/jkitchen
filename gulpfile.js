@@ -1,5 +1,5 @@
 var gulp = require('gulp')
-    mocha = require('gulp-mocha'),
+    gulpMocha = require('gulp-mocha'),
     istanbul = require('gulp-istanbul');
 
 
@@ -9,15 +9,15 @@ gulp.task('serve', () => {
 
 
 gulp.task('server-test', () => {
-    gulp.src('tests/server/*.js')
+    return gulp.src('server/**/*.js')
        .pipe(istanbul())
-        .on('end', function () {
+        .on('end', () => {
             gulp.src('tests/server/*.js')
-                .pipe(mocha({
+                .pipe(gulpMocha({
                   reporter: 'spec'
                 }))
-                .on('error', handleError)
                 .pipe(istanbul.writeReports('reports')); 
     });
 });
+
 
