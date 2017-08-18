@@ -1,6 +1,7 @@
-var gulp = require('gulp')
+const gulp = require('gulp')
     gulpMocha = require('gulp-mocha'),
-    istanbul = require('gulp-istanbul');
+    istanbul = require('gulp-istanbul'),
+    minify = require('gulp-minify');
 
 
 gulp.task('serve', () => {
@@ -20,4 +21,17 @@ gulp.task('server-test', () => {
     });
 });
 
+
+gulp.task('compress', () =>  {
+  gulp.src('public/**/*.js')
+    .pipe(minify({
+        ext:{
+            src:'-debug.js',
+            min:'.js'
+        },
+        exclude: ['tasks'],
+        ignoreFiles: ['.combo.js', '-min.js', './bower_components']
+    }))
+    .pipe(gulp.dest('dist/scripts'))
+});
 

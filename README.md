@@ -30,6 +30,14 @@ Run
 2. bower install
 ```
 
+
+### To start the app
+```
+gulp
+```
+
+
+
 ### Running tests
 
 Front End Test
