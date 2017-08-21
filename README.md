@@ -1,6 +1,12 @@
 # JKitchen
 * This is an app for viewing menus and making meal orders.
 
+
+[![Build Status](https://travis-ci.org/andela-joladimeji/jkitchen.svg?branch=master)](https://travis-ci.org/andela-joladimeji/jkitchen)
+
+
+[![Coverage Status](https://coveralls.io/repos/github/andela-joladimeji/jkitchen/badge.svg?branch=master)](https://coveralls.io/github/andela-joladimeji/jkitchen?branch=master)
+
 ## Tools Used
 * `Nodejs`-- It is fast
 * `Postgresql`
