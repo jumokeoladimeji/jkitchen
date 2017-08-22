@@ -40,7 +40,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['coveralls', 'coverage', 'progress'],
+    reporters: ['coverage', 'coveralls', 'progress'],
 
 
     // web server port
@@ -66,7 +66,7 @@ module.exports = function(config) {
     plugins: [
         'karma-firefox-launcher',
         'karma-jasmine',
-        'karma-coverage'
+        'karma-coverage',
         'karma-coveralls'
     ],
 
