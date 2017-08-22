@@ -32,12 +32,15 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
     },
-
-
+    coverageReporter: {
+        type: 'lcov',
+        dir: 'coverage',
+        subdir: '.'
+    },  
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
 
     // web server port
@@ -59,8 +62,12 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox', 'Chrome'],
-
+    browsers: ['Firefox'],
+    plugins: [
+        'karma-firefox-launcher',
+        'karma-jasmine',
+        'karma-coverage'
+    ],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
