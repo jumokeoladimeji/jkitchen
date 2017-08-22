@@ -67,6 +67,7 @@ module.exports = function(config) {
         'karma-firefox-launcher',
         'karma-jasmine',
         'karma-coverage'
+        'karma-coveralls'
     ],
 
     // Continuous Integration mode
