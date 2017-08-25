@@ -33,10 +33,18 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
-    });
-  },
-  down: function(queryInterface, Sequelize) {
+      }, 
+      userId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'User',
+          key: 'id',
+          as: 'userId',
+        },
+    }
+  }),
+  down: function(queryInterface/* , Sequelize */) {
     return queryInterface.dropTable('Orders');
   }
 };
