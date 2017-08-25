@@ -16,7 +16,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
-require('./server/routes')(app);
+require('./server/routes/user-routes')(app);
+require('./server/routes/menu-routes')(app);
+require('./server/routes/order-routes')(app);
+
 
 app.listen(PORT, (err) => {
   if (err) {

@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       available_quantity: {
-        type: Sequelize.SMALLINT
+        type: Sequelize.INTEGER
       },
       image: {
         type: Sequelize.STRING
@@ -33,7 +33,8 @@ module.exports = {
       }
     });
   },
-  down: function(queryInterface, Sequelize) {
+
+  down: function(queryInterface/* , Sequelize */) {
     return queryInterface.dropTable('Menus');
   }
 };
