@@ -10,17 +10,20 @@ module.exports = (sequelize, DataTypes) => {
     amount: DataTypes.TEXT,
     addendum: DataTypes.TEXT,
     rate: { type: DataTypes.INTEGER, defaultValue: 0 }
-    });
+  });
+  // not sure if i should make an order have many rates
+
   Order.associate = (models) => {
     Order.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    Order.hasMany(models.Order, {
-      foreignKey: 'menuId',
-      as: 'menus',
+    Order.hasMany(models.MealOrderDetail, {
+      foreignKey: 'orderId',
+      as: 'meals',
     });
   }
   return Order;
 };
+
 
