@@ -63,11 +63,15 @@ module.exports = {
         },
         include: [{
           model: Order,
-          as: 'order',
+          as: 'orders',
+        }],
+        include: [{
+          model: Blog,
+          as: 'blogs',
         }],
         order: [
           ['createdAt', 'DESC'],
-          [{ model: Order, as: 'order' }, 'createdAt', 'ASC'],
+          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],
         ],
       })
     .then(user => {
@@ -89,9 +93,8 @@ module.exports = {
         }
       }
     }).catch((err) =>{
-        console.log(err, 'erroodopp')
           res.json({
-              message: 'Error logging in'
+              message: 'Error logging in user'
           });
       });
     }

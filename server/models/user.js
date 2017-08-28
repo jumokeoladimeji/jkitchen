@@ -7,16 +7,27 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     social_media_links: DataTypes.STRING,
     hashedPassword: DataTypes.STRING
-   }, {
-    classMethods: {
-      associate: (models) => {
-        User.hasMany(models.Order, {
-          foreignKey: 'orderId',
-          as: 'orders',
-        });
-      },
-    },
   });
+  User.associate = (models) => {
+    User.hasMany(models.Order, {
+      foreignKey: 'userId',
+      as: 'orders',
+    });
+    User.hasMany(models.Blog, {
+      foreignKey: 'userId',
+      as: 'blogs',
+    });
+    User.hasMany(models.Comment, {
+      foreignKey: 'userId',
+      as: 'comments',
+    });
+    User.hasMany(models.Rate, {
+      foreignKey: 'userId',
+      as: 'rates',
+    });
+  }
   return User;
 };
+
+
 
