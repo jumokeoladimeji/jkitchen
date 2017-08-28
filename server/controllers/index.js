@@ -1,9 +1,9 @@
-const menu = require('./menu');
+const meal = require('./meal');
 const order = require('./order');
 const user = require('./userController');
 
 module.exports = {
-  menu,
+  meal,
   order,
   user, 
 };
