@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define('Comment', {
     content: DataTypes.TEXT
   });    
-  Comment.associate: function(models) {
+  Comment.associate = (models) => {
     Comment.belongsTo(models.Meal, {
       foreignKey: 'mealId',
       onDelete: 'CASCADE',
