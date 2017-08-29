@@ -3,7 +3,7 @@ chai = require('chai'),
 expect = chai.expect,
 assert = chai.assert,
 bcrypt = require('bcryptjs'),
-userController = require('../../server/controllers/user-controller')
+userController = require('../../server/controllers/userController')
 
 
 console.log('in specs');
