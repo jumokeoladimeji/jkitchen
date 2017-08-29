@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'orderId',
       onDelete: 'CASCADE',
     });
-    MealOrderDetail.belongsTo(models.Meals, {
-      foreignKey: 'mealsId',
+    MealOrderDetail.belongsTo(models.Meal, {
+      foreignKey: 'mealId',
       onDelete: 'CASCADE',
     });
 

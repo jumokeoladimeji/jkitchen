@@ -8,13 +8,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      expected_time_of_delivery: {
+      expectedTimeOfDelivery: {
         type: Sequelize.DATE
       },
       status: {
         type: Sequelize.STRING
       },
-      confirm_delivery: {
+      confirmDelivery: {
         type: Sequelize.BOOLEAN
       },
       assignedTo: {
@@ -23,7 +23,7 @@ module.exports = {
       amount: {
         type: Sequelize.TEXT
       },
-      addendum: {
+      extraNotes: {
         type: Sequelize.TEXT
       },
       rate: {
@@ -47,6 +47,6 @@ module.exports = {
         },
       }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Orders');
+  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Orders')
 };
 

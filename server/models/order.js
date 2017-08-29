@@ -3,15 +3,14 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
-    expected_time_of_delivery: DataTypes.DATE,
-    status: { type: DataTypes.BOOLEAN, defaultValue: 'pending' },
-    confirm_delivery: { type: DataTypes.BOOLEAN, defaultValue: false },
+    expectedTimeOfDelivery: DataTypes.DATE,
+    status: { type: DataTypes.STRING, defaultValue: 'pending' },
+    confirmDelivery: { type: DataTypes.BOOLEAN, defaultValue: false },
     assignedTo: DataTypes.STRING,
     amount: DataTypes.TEXT,
-    addendum: DataTypes.TEXT,
+    extraNotes: DataTypes.TEXT,
     rate: { type: DataTypes.INTEGER, defaultValue: 0 }
   });
-  // not sure if i should make an order have many rates
 
   Order.associate = (models) => {
     Order.belongsTo(models.User, {
@@ -20,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Order.hasMany(models.MealOrderDetail, {
       foreignKey: 'orderId',
-      as: 'meals',
+      as: 'mealOrderDetails',
     });
   }
   return Order;

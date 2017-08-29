@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
   Meal.associate = (models) => {
     Meal.hasMany(models.MealOrderDetail, {
       foreignKey: 'mealId',
-      as 'mealOrderDetails'
+      as: 'mealOrderDetails'
     });
     Meal.hasMany(models.Rate, {
       foreignKey: 'mealId',
       as: 'rates',
     });
     Meal.hasMany(models.Comment, {
-      foreignKey: 'commentId',
+      foreignKey: 'mealId',
       as: 'comments',
     });
   }
