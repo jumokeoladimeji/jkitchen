@@ -9,6 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      username: {
         type: Sequelize.STRING
       },
       role: {
@@ -17,14 +21,14 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      phone_number: {
+      phoneNumber: {
         type: Sequelize.STRING
       },
       image: {
         type: Sequelize.STRING
       },
-      social_media_links: {
-        type: Sequelize.STRING
+      socialMediaLinks: {
+        type: Sequelize.JSON
       },
       hashedPassword: {
         type: Sequelize.STRING
