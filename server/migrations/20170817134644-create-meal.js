@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       price: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       available_quantity: {
         type: Sequelize.INTEGER
@@ -32,5 +32,5 @@ module.exports = {
         type: Sequelize.DATE
       },
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Users')
+  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Meals')
 };
