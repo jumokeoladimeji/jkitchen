@@ -1,17 +1,17 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Rate = sequelize.define('Rate', {
+  const Rating = sequelize.define('Rating', {
     ratings: DataTypes.INTEGER
   });
-  Rate.associate = (models) => {
-    Rate.belongsTo(models.User, {
+  Rating.associate = (models) => {
+    Rating.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    Rate.belongsTo(models.Meal, {
+    Rating.belongsTo(models.Meal, {
       foreignKey: 'mealId',
       onDelete: 'CASCADE',
     });
   }
-  return Rate;
+  return Rating;
 };

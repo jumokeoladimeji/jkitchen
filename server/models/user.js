@@ -22,9 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'comments',
     });
-    User.hasMany(models.Rate, {
+    User.hasMany(models.Rating, {
       foreignKey: 'userId',
-      as: 'rates',
+      as: 'ratings',
     });
     User.hasMany(models.ArticleUpdatedBy, {
       foreignKey: 'updatedBy',
