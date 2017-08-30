@@ -2,11 +2,11 @@ const User = require('../models').User,
   Order = require('../models').Order;
   bcrypt = require('bcryptjs');
 
+
 module.exports = {
-  // hashPassword: (password) => {
-  //   console.log('thisis working')
-  //   return bcrypt.hashSync(password, 12);
-  // },
+  hashPassword: (password) => {
+    return bcrypt.hashSync(password, 12);
+  },
   signup: (req, res) => {
     userDetails = req.body
     if (!userDetails.email) {
@@ -15,9 +15,13 @@ module.exports = {
     if (!userDetails.name) {
       return res.status(422).send({ error: 'You must enter your full name.'});
     }
+    if (!userDetails.username){
+      return res.status(422).send({ error: 'You must enter a username.' });
+    }
     if (!userDetails.password) {
       return res.status(422).send({ error: 'You must enter a password.' });
     }
+    console.log(userDetails)
 
     return User
       .find({ 
@@ -32,10 +36,11 @@ module.exports = {
         // userDetails.hashedPassword = hashPassword(userDetails.password)
         return User.create({
           name: userDetails.name,
+          username: userDetails.username,
           email: userDetails.email,
-          phone_number: userDetails.phone_number,
+          phoneNumber: userDetails.phoneNumber,
           imageURL: userDetails.imageURL,
-          social_media_links: userDetails.social_media_links,
+          socialMediaLinks: userDetails.socialMediaLinks,
           hashedPassword: bcrypt.hashSync(userDetails.password, 12)
         }).then(newUser => {
           res.status(200).send(newUser)
@@ -43,6 +48,7 @@ module.exports = {
       }
     })
     .catch((err) =>{
+      console.log(err)
       res.status(500).send({
         message: err
       });
@@ -64,15 +70,13 @@ module.exports = {
         include: [{
           model: Order,
           as: 'orders',
-        }],
-        include: [{
-          model: Blog,
-          as: 'blogs',
+        },{
+          model: Article,
+          as: 'articles',
         }],
         order: [
           ['createdAt', 'DESC'],
-          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],
-        ],
+          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],]
       })
     .then(user => {
       if (!user) {
@@ -83,21 +87,71 @@ module.exports = {
       if (user) {
         const isPasswordValid = bcrypt.compareSync(userDetails.password, user.hashedPassword)
         if (isPasswordValid) {
-          res.json({
-              message: 'welcome back'
+
+          // create a token
+          const token = jwt.sign(user, 'secret', {
+            expiresInMinutes: 1440 // expires in 24 hours
+          });
+          res.status(200).send({
+            message: 'welcome back',
+            data: user,
+            signintoken: token,
+            expiresInMinutes: 1440
           });
         } else {
-          res.json({
-              message: 'incorrect password'
+          res.status(401).send({
+            message: 'incorrect password'
           })
         }
       }
-    }).catch((err) =>{
-          res.json({
-              message: 'Error logging in user'
-          });
+    })
+    .catch((err) =>{
+      res.status(401).send({
+        message: 'Error logging in user', err
       });
-    }
+    });
+  },
+  signout : (req, res) => {
+    return res.redirect('/');
+  },
+  updateUser: (req, res) => {
+    return User
+      .findById(req.params.userId,{
+        include: [{
+          model: Order,
+          as: 'orders',
+        },{
+          model: Article,
+          as: 'articles',
+        }],
+        order: [
+          ['createdAt', 'DESC'],
+          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],
+        ]})
+    .then(user => {
+      if (!user) {
+        res.json({
+          message: 'User does not exist'
+        });
+      }
+      return User
+        .update({
+          role: req.body.role || User.role, 
+          name: userDetails.name || User.name, 
+          username: userDetails.username || User.username,
+          email: userDetails.email || User.email, 
+          phoneNumber: userDetails.phoneNumber || User.phoneNumber, 
+          imageURL: userDetails.imageURL || User.imageURL, 
+          socialMediaLinks: userDetails.socialMediaLinks || User.socialMediaLinks, 
+          hashedPassword: bcrypt.hashSync(userDetails.password, 12) || User.password,
+        })
+        .then((updatedUser) => res.status(200).send(updatedUser))
+      }).catch((err) =>{
+        res.json({
+            message: 'Error logging in user'
+        });
+      });
+  }
 }
 
 
