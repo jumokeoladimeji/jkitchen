@@ -5,16 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     content: DataTypes.TEXT,
     excerpt: DataTypes.STRING,
-    imageURL: DataTypes.STRING
+    imageURL: DataTypes.STRING,
+    type: { type: DataTypes.STRING, defaultValue: 'article' }, // article or revision
   });
   Article.associate = (models) => {
     Article.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
-    });
-    Article.hasMany(models.ArticleUpdatedBy, {
-      foreignKey: 'articleId',
-      as: 'articleUpdatedBys',
     });
   }
   return Article;

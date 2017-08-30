@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: { type: DataTypes.STRING, allowNull: false},
-    username: { type: DataTypes.STRING},
+    username: { type: DataTypes.STRING, allowNull: false},
     role: { type: DataTypes.STRING, defaultValue: 'user' },
     email: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
@@ -25,10 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Rating, {
       foreignKey: 'userId',
       as: 'ratings',
-    });
-    User.hasMany(models.ArticleUpdatedBy, {
-      foreignKey: 'updatedBy',
-      as: 'articleUpdatedBys',
     });
   }
   return User;
