@@ -29,13 +29,15 @@ module.exports = {
       rate: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       }, 
       userId: {
         type: Sequelize.INTEGER,
@@ -43,10 +45,10 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-          as: 'userId',
-        },
+          as: 'userId'
+        }
       }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Orders')
+  down: (queryInterface) => queryInterface.dropTable('Orders')
 };
 

@@ -24,13 +24,15 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -38,9 +40,9 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-          as: 'userId',
-        },
+          as: 'userId'
+        }
       }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Articles')
+  down: (queryInterface) => queryInterface.dropTable('Articles')
 };

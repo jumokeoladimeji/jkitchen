@@ -11,13 +11,15 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       mealId: {
         type: Sequelize.INTEGER,
@@ -34,9 +36,9 @@ module.exports = {
         references: {
           model: 'Orders',
           key: 'id',
-          as: 'orderId',
-        },
+          as: 'orderId'
+        }
       }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('MealOrderDetails')
+  down: (queryInterface) => queryInterface.dropTable('MealOrderDetails')
 };

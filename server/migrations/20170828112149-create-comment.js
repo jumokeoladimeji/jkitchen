@@ -11,11 +11,11 @@ module.exports = {
       content: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },      
@@ -34,9 +34,9 @@ module.exports = {
         references: {
           model: 'Meals',
           key: 'id',
-          as: 'mealId',
-        },
-      },
+          as: 'mealId'
+        }
+      }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Comments')
+  down: (queryInterface) => queryInterface.dropTable('Comments')
 };

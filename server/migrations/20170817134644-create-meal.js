@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-        title: {
+      title: {
         type: Sequelize.STRING
       },
       price: {
@@ -23,14 +23,16 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+      }
     }),
-  down: (queryInterface /* , Sequelize */) => queryInterface.dropTable('Meals')
+  down: (queryInterface) => queryInterface.dropTable('Meals')
 };
