@@ -23,7 +23,8 @@
     "pg": "^7.1.2",
     "pg-hstore": "^2.3.2",
     "redis": "^2.7.1",
-    "sequelize": "^4.5.0"
+    "sequelize": "^4.5.0",
+    "sinon": "^3.2.1"
   },
   "devDependencies": {
     "assert": "^1.4.1",
