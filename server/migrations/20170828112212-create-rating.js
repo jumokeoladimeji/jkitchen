@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Rates', {
+    queryInterface.createTable('Ratings', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,12 +11,12 @@ module.exports = {
       ratings: {
         type: Sequelize.INTEGER
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
@@ -40,5 +40,5 @@ module.exports = {
         }
       }
     }),
-  down: (queryInterface) => queryInterface.dropTable('Rates')
+  down: (queryInterface) => queryInterface.dropTable('Ratings')
 };
