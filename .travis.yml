@@ -8,9 +8,10 @@ script:
 cache:
   directories:
     - "node_modules"
-    
+
 services:
   - postgresql
+  - redis-server
 
 before_install:
   - "export DISPLAY=:99.0"
