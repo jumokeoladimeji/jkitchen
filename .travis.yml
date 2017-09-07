@@ -8,10 +8,16 @@ script:
 cache:
   directories:
     - "node_modules"
+    
+services:
+  - postgresql
 
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+
 before_script:
-    - npm install -g bower istanbul
-    - bower install
+  - psql -c 'create database jkitchen;' -U postgres
+  - npm install -g bower istanbul
+  - bower install
+
