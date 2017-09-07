@@ -1,23 +1,25 @@
 {
   "development": {
-    "username": "main",
+    "username": "user",
     "password": null,
     "database": "jkitchen",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "main",
+    "username": "user",
     "password": null,
     "database": "jkitchentest",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "main",
+    "username": "user",
     "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
 }
+
+ 
