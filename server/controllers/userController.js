@@ -1,154 +1,132 @@
 const User = require('../models').User,
   Order = require('../models').Order;
-  bcrypt = require('bcryptjs');
+  bcrypt = require('bcryptjs')
+  jwt = require('jsonwebtoken');
 
 
 module.exports = {
   hashPassword: (password) => {
     return bcrypt.hashSync(password, 12);
   },
-  signup: (req, res) => {
+  signup: (req, resp) => {
     userDetails = req.body
+
     if (!userDetails.email) {
-      return res.status(422).send({ error: 'You must enter an email address.'});
+      return resp.status(422).send({ error: 'You must enter an email address.'});
     }
     if (!userDetails.name) {
-      return res.status(422).send({ error: 'You must enter your full name.'});
+      return resp.status(422).send({ error: 'You must enter your full name.'});
     }
     if (!userDetails.username){
-      return res.status(422).send({ error: 'You must enter a username.' });
+      return resp.status(422).send({ error: 'You must enter a username.' });
     }
     if (!userDetails.password) {
-      return res.status(422).send({ error: 'You must enter a password.' });
+      return resp.status(422).send({ error: 'You must enter a password.' });
     }
-    console.log(userDetails)
-
-    return User
+    User
       .find({ 
         where: {
           email: userDetails.email
-        },
+        }
       })
-    .then(existingUser =>{
-      if (existingUser) {
-        return res.status(422).send({ error: 'That email address is already in use.' });
-      }else{
+      .then(existingUser =>{
+        if (existingUser) {
+          return resp.status(422).send({ error: 'That email address is already in use.' });
+        }
         // userDetails.hashedPassword = hashPassword(userDetails.password)
-        return User.create({
-          name: userDetails.name,
-          username: userDetails.username,
-          email: userDetails.email,
-          phoneNumber: userDetails.phoneNumber,
-          imageURL: userDetails.imageURL,
-          socialMediaLinks: userDetails.socialMediaLinks,
-          hashedPassword: bcrypt.hashSync(userDetails.password, 12)
-        }).then(newUser => {
-          res.status(200).send(newUser)
-        })
-      }
-    })
-    .catch((err) =>{
-      console.log(err)
-      res.status(500).send({
-        message: err
-      });
-    });
+        User
+          .create({
+            name: userDetails.name,
+            username: userDetails.username,
+            email: userDetails.email,
+            phoneNumber: userDetails.phoneNumber,
+            imageURL: userDetails.imageURL,
+            socialMediaLinks: userDetails.socialMediaLinks,
+            hashedPassword: bcrypt.hashSync(userDetails.password, 12)
+          })
+          .then(newUser => resp.status(200).send(newUser))
+      })
+      .catch(err => { 
+        resp.status(500).send({message: err})})
   },
-  signin: (req, res) => {
+  signin: (req, resp) => {
     userDetails = req.body
     if (!userDetails.email) {
-      return res.status(422).send({ error: 'You must enter an email address.'});
+      return resp.status(422).send({ error: 'You must enter an email address.'});
     }
     if (!userDetails.password) {
-      return res.status(422).send({ error: 'You must enter a password.' });
+      return resp.status(422).send({ error: 'You must enter a password.' });
     }
-      return User
+    User
       .find({ 
         where: {
           email: userDetails.email
-        },
-        include: [{
-          model: Order,
-          as: 'orders',
-        },{
-          model: Article,
-          as: 'articles',
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],]
-      })
-    .then(user => {
-      if (!user) {
-          res.json({
-              message: 'User does not exist'
-          });
-      }
-      if (user) {
-        const isPasswordValid = bcrypt.compareSync(userDetails.password, user.hashedPassword)
-        if (isPasswordValid) {
-
-          // create a token
-          const token = jwt.sign(user, 'secret', {
-            expiresInMinutes: 1440 // expires in 24 hours
-          });
-          res.status(200).send({
-            message: 'welcome back',
-            data: user,
-            signintoken: token,
-            expiresInMinutes: 1440
-          });
-        } else {
-          res.status(401).send({
-            message: 'incorrect password'
-          })
         }
-      }
-    })
-    .catch((err) =>{
-      res.status(401).send({
-        message: 'Error logging in user', err
-      });
-    });
-  },
-  signout : (req, res) => {
-    return res.redirect('/');
-  },
-  updateUser: (req, res) => {
-    return User
-      .findById(req.params.userId,{
-        include: [{
-          model: Order,
-          as: 'orders',
-        },{
-          model: Article,
-          as: 'articles',
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Order, as: 'orders' }, 'createdAt', 'ASC'],
-        ]})
-    .then(user => {
-      if (!user) {
-        res.json({
-          message: 'User does not exist'
+      })
+      .then(user => {
+        if (!user) {
+          return resp.json({
+            message: 'User does not exist'
+          });
+        }
+        if (user) {
+          const isPasswordValid = bcrypt.compareSync(userDetails.password, user.hashedPassword)
+          if (isPasswordValid) {
+            // create a token
+            const token = jwt.sign(user.dataValues, 'secret', {
+              expiresIn: 1440 
+            });
+            return resp.status(200).send({
+              message: 'welcome back',
+              data: user.dataValues,
+              signintoken: token,
+              expiresIn: 1440
+            });
+          } else {
+            return resp.status(401).send({
+              message: 'incorrect password'
+            })
+          }
+        }
+      })
+      .catch((err) =>{
+        resp.status(401).send({
+          message: 'Error logging in user', err
         });
-      }
-      return User
-        .update({
-          role: req.body.role || User.role, 
-          name: userDetails.name || User.name, 
-          username: userDetails.username || User.username,
-          email: userDetails.email || User.email, 
-          phoneNumber: userDetails.phoneNumber || User.phoneNumber, 
-          imageURL: userDetails.imageURL || User.imageURL, 
-          socialMediaLinks: userDetails.socialMediaLinks || User.socialMediaLinks, 
-          hashedPassword: bcrypt.hashSync(userDetails.password, 12) || User.password,
-        })
-        .then((updatedUser) => res.status(200).send(updatedUser))
-      }).catch((err) =>{
-        res.json({
-            message: 'Error logging in user'
+      });
+  },
+  signout : (req, resp) => {
+    resp.redirect('/');
+  },
+  updateUser: (req, resp) => {
+    User
+      .findById(req.params.userId)
+      .then(user => {
+        if (!user) {
+          return resp.json({
+            message: 'User does not exist'
+          });
+        }
+        const userDetails = req.body
+        const hashedPasswordToSave = userDetails.password ? bcrypt.hashSync(userDetails.password, 12) : user.hashedPassword
+        user
+          .update({
+            role: userDetails.role || user.role, 
+            name: userDetails.name || user.name, 
+            username: userDetails.username || user.username,
+            email: userDetails.email || user.email, 
+            phoneNumber: userDetails.phoneNumber || user.phoneNumber, 
+            imageURL: userDetails.imageURL || user.imageURL, 
+            socialMediaLinks: userDetails.socialMediaLinks || user.socialMediaLinks, 
+            hashedPassword: hashedPasswordToSave
+          })
+          .then((updatedUser) => {
+            resp.status(200).send(updatedUser)
+          })
+      })
+      .catch((err) => {
+        resp.json({
+            message: 'Error updating user'
         });
       });
   }
