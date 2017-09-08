@@ -13,7 +13,7 @@ let mealData = { title: 'OfadaMealNow', price: 50, available_quantity: 10, image
 
 
 describe('Meal Controller',  () => {
-  after(() => {
+  before(() => {
     return Meal.sequelize.sync();
   });
 
