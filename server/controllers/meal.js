@@ -3,7 +3,6 @@ const Meal = require('../models').Meal;
 module.exports = {
   // Only admin can create and update meal
   create: (req, res) => {
-    console.log(req.body)
     return Meal
       .create({
         title: req.body.title,
@@ -12,8 +11,10 @@ module.exports = {
         image: req.body.image,
         description: req.body.description,
       })
-      .then((meal) => res.status(201).send(meal))
-      .catch((error) => res.status(500).send(error));
+      .then((meal) => res.status(200).send(meal))
+      .catch((error) => {
+        res.status(500).send(error)
+      });
   },
 
   list: (req, res) => {
@@ -25,8 +26,21 @@ module.exports = {
 
   getOne: (req, res) => {
     return Meal
-      .findById(req.params.MealId)
-      .then((Meal) => {
+      .findOne({
+        where: {id: req.params.mealId}
+        // include: [{
+        //   model: Rating,
+        //   as: 'ratings',
+        // },{
+        //   model: Comment,
+        //   as: 'comments'
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Comment, as: 'comments' }, 'createdAt', 'ASC'],
+        // ],
+      })
+      .then((meal) => {
         if (!meal) {
           return res.status(404).send({
             message: 'Meal Not Found',
@@ -34,25 +48,43 @@ module.exports = {
         }
         return res.status(200).send(meal);
       })
-      .catch((error) => res.status(500).send(error));
+      .catch((error) =>{
+       res.status(500).send(error)
+      });
   },
 
   update: (req, res) => {
     return Meal
-      .findById(req.params.MealId)
+      .findById(req.params.mealId)
+        // , {
+        // include: [{
+        //   model: Rating,
+        //   as: 'ratings',
+        // }
+        // ,{
+        //   model: Comment,
+        //   as: 'comments'
+        // }, {
+        //   model: MealOrderDetail,
+        //   as: 'mealOrderDetail'
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Comment, as: 'comments' }, 'createdAt', 'ASC'],
+        // ]})
       .then(meal => {
         if (!meal) {
           return res.status(404).send({
             message: 'Meal Not Found',
           });
         }
-        return Meal
+        return meal
           .update({
-            title: req.body.title || Meal.title,
-            price: req.body.price || Meal.price,
-            available_quantity: req.body.available_quantity || Meal.available_quantity,
-            image: req.body.image || Meal.image,
-            description: req.body.description || Meal.description,
+            title: req.body.title || meal.title,
+            price: req.body.price || meal.price,
+            available_quantity: req.body.available_quantity || meal.available_quantity,
+            image: req.body.image || meal.image,
+            description: req.body.description || meal.description,
           })
           .then((updatedMeal) => res.status(200).send(updatedMeal))
       })
@@ -61,14 +93,14 @@ module.exports = {
 
   destroy: (req, res) => {
     return Meal
-      .findById(req.params.MealId)
-      .then(Meal => {
-        if (!Meal) {
+      .findById(req.params.mealId)
+      .then(meal => {
+        if (!meal) {
           return res.status(500).send({
             message: 'Meal Not Found',
           });
         }
-        return Meal
+        return meal
           .destroy()
           .then(() => res.status(200).send({message: 'Meal deleted.'}))
       })
