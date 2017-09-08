@@ -25,6 +25,10 @@ describe('Meal Controller',  () => {
           done()
         });
     }); 
+    after(() => {
+      return Meal.sequelize.sync();
+    });
+
     it("should post a Meal", (done) => {
       chai.request(index)
         .post('/api/meals')
