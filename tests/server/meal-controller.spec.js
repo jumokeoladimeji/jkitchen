@@ -13,6 +13,10 @@ let mealData = { title: 'OfadaMealNow', price: 50, available_quantity: 10, image
 
 
 describe('Meal Controller',  () => {
+  after(() => {
+    return Meal.sequelize.sync();
+  });
+
   describe('Create Function',  () => {
     before((done) => { 
       Meal
@@ -25,10 +29,6 @@ describe('Meal Controller',  () => {
           done()
         });
     }); 
-    after(() => {
-      return Meal.sequelize.sync();
-    });
-
     it("should post a Meal", (done) => {
       chai.request(index)
         .post('/api/meals')

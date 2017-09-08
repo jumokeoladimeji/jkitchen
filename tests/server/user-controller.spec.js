@@ -13,6 +13,10 @@ let userData = { username: 'Jim', password:'$32#hdsjsd', name: 'JIm Caerey', ema
 chai.use(require('chai-http'));
 
 describe('User Controller',  () => {
+  after(() => {
+    return User.sequelize.sync();
+  });
+  
   describe('Hash Password',  () => {
     it('should hash the new user\'s password', () => {
       hashedPassword = userController.hashPassword('jdiew2')
@@ -33,9 +37,6 @@ describe('User Controller',  () => {
         });
     }); 
 
-    after(() => {
-      return User.sequelize.sync();
-    });
 
     it("should create users", function(done) {
       console.log('wekekkerlrel!!!!!!!!!!!!')
