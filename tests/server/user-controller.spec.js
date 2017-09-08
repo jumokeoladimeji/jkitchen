@@ -1,19 +1,18 @@
 process.env.NODE_ENV = 'test';
-const mocha = require('mocha'),
-chai = require('chai'),
-expect = chai.expect,
-assert = chai.assert,
-should = chai.should(),
-bcrypt = require('bcryptjs'),
-index = require('../../index'),
-userController = require('../../server/controllers/userController'),
+const mocha = require('mocha');
+const chai = require('chai');
+const expect = chai.expect;
+const assert = chai.assert;
+const should = chai.should();
+const bcrypt = require('bcryptjs');
+const index = require('../../index');
+const userController = require('../../server/controllers/userController');
 
-User = require('../../server/models').User,
-userData = { username: 'Jim', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
+const User = require('../../server/models').User;
+let userData = { username: 'Jim', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
 chai.use(require('chai-http'));
 
 describe('User Controller',  () => {
-  
   describe('Hash Password',  () => {
     it('should hash the new user\'s password', () => {
       hashedPassword = userController.hashPassword('jdiew2')
@@ -30,10 +29,16 @@ describe('User Controller',  () => {
           }
         })
         .then(function() {
-          return
-      });
+          return;
+        });
     }); 
+
+    after(() => {
+      return User.sequelize.sync();
+    });
+
     it("should create users", function(done) {
+      console.log('wekekkerlrel!!!!!!!!!!!!')
       chai.request(index)
         .post('/api/user/signup')
         .send(userData)

@@ -8,20 +8,20 @@ module.exports = {
   hashPassword: (password) => {
     return bcrypt.hashSync(password, 12);
   },
-  signup: (req, resp) => {
+  signup: (req, res) => {
     userDetails = req.body
 
     if (!userDetails.email) {
-      return resp.status(422).send({ error: 'You must enter an email address.'});
+      return res.status(422).send({ message: 'You must enter an email address.'});
     }
     if (!userDetails.name) {
-      return resp.status(422).send({ error: 'You must enter your full name.'});
+      return res.status(422).send({ message: 'You must enter your full name.'});
     }
     if (!userDetails.username){
-      return resp.status(422).send({ error: 'You must enter a username.' });
+      return res.status(422).send({ message: 'You must enter a username.' });
     }
     if (!userDetails.password) {
-      return resp.status(422).send({ error: 'You must enter a password.' });
+      return res.status(422).send({ message: 'You must enter a password.' });
     }
     User
       .find({ 
@@ -31,7 +31,7 @@ module.exports = {
       })
       .then(existingUser =>{
         if (existingUser) {
-          return resp.status(422).send({ error: 'That email address is already in use.' });
+          return res.status(422).send({ error: 'That email address is already in use.' });
         }
         // userDetails.hashedPassword = hashPassword(userDetails.password)
         User
@@ -44,18 +44,19 @@ module.exports = {
             socialMediaLinks: userDetails.socialMediaLinks,
             hashedPassword: bcrypt.hashSync(userDetails.password, 12)
           })
-          .then(newUser => resp.status(200).send(newUser))
+          .then(newUser => res.status(200).send(newUser))
       })
-      .catch(err => { 
-        resp.status(500).send({message: err})})
+      .catch(error => { 
+        console.log(error, 'error oooo')
+        res.status(500).send({message: error})})
   },
-  signin: (req, resp) => {
+  signin: (req, res) => {
     userDetails = req.body
     if (!userDetails.email) {
-      return resp.status(422).send({ error: 'You must enter an email address.'});
+      return res.status(422).send({ message: 'You must enter an email address.'});
     }
     if (!userDetails.password) {
-      return resp.status(422).send({ error: 'You must enter a password.' });
+      return res.status(422).send({ message: 'You must enter a password.' });
     }
     User
       .find({ 
@@ -65,7 +66,7 @@ module.exports = {
       })
       .then(user => {
         if (!user) {
-          return resp.json({
+          return res.json({
             message: 'User does not exist'
           });
         }
@@ -76,34 +77,35 @@ module.exports = {
             const token = jwt.sign(user.dataValues, 'secret', {
               expiresIn: 1440 
             });
-            return resp.status(200).send({
+            return res.status(200).send({
               message: 'welcome back',
               data: user.dataValues,
               signintoken: token,
               expiresIn: 1440
             });
           } else {
-            return resp.status(401).send({
+            return res.status(401).send({
               message: 'incorrect password'
             })
           }
         }
       })
-      .catch((err) =>{
-        resp.status(401).send({
-          message: 'Error logging in user', err
+      .catch((error) =>{
+        console.log(error)
+        res.status(401).send({
+          message: 'Error logging in user', error
         });
       });
   },
-  signout : (req, resp) => {
-    resp.redirect('/');
+  signout : (req, res) => {
+    res.redirect('/');
   },
-  updateUser: (req, resp) => {
+  updateUser: (req, res) => {
     User
       .findById(req.params.userId)
       .then(user => {
         if (!user) {
-          return resp.json({
+          return res.json({
             message: 'User does not exist'
           });
         }
@@ -121,12 +123,12 @@ module.exports = {
             hashedPassword: hashedPasswordToSave
           })
           .then((updatedUser) => {
-            resp.status(200).send(updatedUser)
+            res.status(200).send(updatedUser)
           })
       })
-      .catch((err) => {
-        resp.json({
-            message: 'Error updating user'
+      .catch((error) => {
+        res.json({
+            message: error
         });
       });
   }
