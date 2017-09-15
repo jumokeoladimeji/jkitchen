@@ -1,4 +1,6 @@
 const Meal = require('../models').Meal;
+const Rating = require('../models').Rating;
+const Comment = require('../models').Comment;
 
 module.exports = {
   // Only admin can create and update meal
@@ -19,59 +21,85 @@ module.exports = {
 
   list: (req, res) => {
     return Meal
-      .findAll()
+      .findAll(
+      {
+      // include: [
+      //   {
+      //     model: Rating,
+      //      as: 'ratings'
+      //   }
+      // ]
+    }
+    )
       .then((meals) => res.status(200).send(meals))
-      .catch((error) => res.status(500).send(error));
+      .catch((error) => {
+        res.status(500).send(error)
+      });
   },
 
   getOne: (req, res) => {
+   mealId = req.params.mealId
+    // get meal from redis cache
+    client.get(`meal${mealId}`, function(err, reply) {
+      if(reply){
+        let meal = JSON.parse(reply)
+        // create a sorted set in redis for popular meals
+        // when count is greater than 3, add the meal to popular meals
+        if(meal.count > 3) {
+          client.zincrby('popularMeals', meal.count, 1, JSON.stringify(meal))
+        }
+        else{
+          meal.count++
+        }
+        return res.status(200).send(meal)
+      }
+    });
     return Meal
-      .findOne({
-        where: {id: req.params.mealId}
-        // include: [{
-        //   model: Rating,
-        //   as: 'ratings',
-        // },{
-        //   model: Comment,
-        //   as: 'comments'
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Comment, as: 'comments' }, 'createdAt', 'ASC'],
-        // ],
-      })
-      .then((meal) => {
+      .findById(req.params.mealId)
+      .then(meal => {
         if (!meal) {
           return res.status(404).send({
             message: 'Meal Not Found',
           });
         }
-        return res.status(200).send(meal);
+        let mealToCache = meal.dataValues
+        mealToCache.count = 0
+
+        client.set(`meal${mealId}`, JSON.stringify(mealToCache), function(err, reply) {
+          return res.status(200).send(meal);
+        });
       })
       .catch((error) =>{
-       res.status(500).send(error)
+        res.status(500).send(error)
       });
   },
+  getMostPopularMeals: (req, res) => {
+    client.zrangebyscore('popularMeals', 3, 10, function(err, reply){
+      if(err){
+        return res.status(500).send(err)
+      } 
+      return res.status(200).send(reply);
+    });
 
+  },
   update: (req, res) => {
     return Meal
       .findById(req.params.mealId)
-        // , {
-        // include: [{
-        //   model: Rating,
-        //   as: 'ratings',
-        // }
-        // ,{
-        //   model: Comment,
-        //   as: 'comments'
-        // }, {
-        //   model: MealOrderDetail,
-        //   as: 'mealOrderDetail'
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Comment, as: 'comments' }, 'createdAt', 'ASC'],
-        // ]})
+      // {
+      //   include: [{
+      //     model: Rating,
+      //     as: 'ratings',
+      //   }
+      //   ,{
+      //     model: Comment,
+      //     as: 'comments'
+      //   }, {
+      //     model: MealOrderDetail,
+      //     as: 'mealOrderDetail'
+      //   }],
+      //   order: [
+      //     ['createdAt', 'DESC'],
+      //   ]})
       .then(meal => {
         if (!meal) {
           return res.status(404).send({
@@ -105,5 +133,6 @@ module.exports = {
           .then(() => res.status(200).send({message: 'Meal deleted.'}))
       })
       .catch((error) => res.status(500).send(error));
-  },
+  }
+  // return user.decrement('my-integer-field', {by: 2})
 };
