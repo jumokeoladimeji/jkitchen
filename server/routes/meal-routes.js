@@ -6,5 +6,7 @@ module.exports = (app) => {
   app.get('/api/meals/:mealId', mealController.getOne);
   app.put('/api/meals/:mealId', mealController.update);
   app.delete('/api/meals/:mealId', mealController.destroy);
+  app.get('/api/popularMeals', mealController.getMostPopularMeals);
+
 }
 

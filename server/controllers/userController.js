@@ -47,8 +47,8 @@ module.exports = {
           .then(newUser => res.status(200).send(newUser))
       })
       .catch(error => { 
-        console.log(error, 'error oooo')
-        res.status(500).send({message: error})})
+        res.status(500).send({message: error})
+      })
   },
   signin: (req, res) => {
     userDetails = req.body
@@ -91,7 +91,6 @@ module.exports = {
         }
       })
       .catch((error) =>{
-        console.log(error)
         res.status(401).send({
           message: 'Error logging in user', error
         });

@@ -30,7 +30,6 @@ module.exports = {
       ]})
       .then((meals) => res.status(200).send(meals))
       .catch((error) => {
-        console.log(error)
         res.status(500).send(error)
       });
   },
@@ -41,52 +40,55 @@ module.exports = {
     client.get(`meal${mealId}`, function(err, reply) {
       if(reply){
         let meal = JSON.parse(reply)
-        // create a sorted set in redis for popular meals
-        // when count is greater than 3, add the meal to popular meals
+        // create a set in redis for popular meals
+        // when count is more than one, add the meal to popular meals
         if (meal.count > 1) {
-          client.zincrby('popularMeals', meal.count, 1, JSON.stringify(meal))
+          client.sadd('mostPopularMeals', reply)
         }
         else{
           meal.count++
         }
         return res.status(200).send(meal)
       }
-    });
-    return Meal
-      .findById(req.params.mealId, {
-        include: [{
-          model: Rating,
-          as: 'ratings',
-        }
-        // ,{
-        //   model: Comment,
-        //   as: 'comments'
-        // }, {
-        //   model: MealOrderDetail,
-        //   as: 'mealOrderDetails'
-        // }
-        ]
-      })
-      .then(meal => {
-        if (!meal) {
-          return res.status(404).send({
-            message: 'Meal Not Found',
+      else{
+        return Meal
+          .findById(req.params.mealId, {
+            include: [{
+              model: Rating,
+              as: 'ratings',
+            }
+            // ,{
+            //   model: Comment,
+            //   as: 'comments'
+            // }, {
+            //   model: MealOrderDetail,
+            //   as: 'mealOrderDetails'
+            // }
+            ]
+          })
+          .then(meal => {
+            if (!meal) {
+              return res.status(404).send({
+                message: 'Meal Not Found',
+              });
+            }
+            let mealToCache = meal.dataValues
+            mealToCache.count = 0
+            client.set(`meal${mealId}`, JSON.stringify(mealToCache), function(err, reply) {
+              return res.status(200).send(meal);
+            });
+          })
+          .catch((error) =>{
+            res.status(500).send(error)
           });
-        }
-        let mealToCache = meal.dataValues
-        mealToCache.count = 0
 
-        client.set(`meal${mealId}`, JSON.stringify(mealToCache), function(err, reply) {
-          return res.status(200).send(meal);
-        });
-      })
-      .catch((error) =>{
-        console.log(error, 'errekkerkker')
-        res.status(500).send(error)
-      });
+      }
+    });
+
   },
   getMostPopularMeals: (req, res) => {
-    client.zrangebyscore('popularMeals', 3, 10, function(err, reply){
+
+    client.smembers('mostPopularMeals', function(err, reply){
       if(err){
         return res.status(500).send(err)
       } 
@@ -127,7 +129,6 @@ module.exports = {
           .then((updatedMeal) => res.status(200).send(updatedMeal))
       })
       .catch((error) =>{
-        console.log(error, 'errekkerkker')
        res.status(500).send(error)});
   },
 

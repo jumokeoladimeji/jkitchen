@@ -11,7 +11,6 @@ module.exports = {
     })
     .then((rate) => res.status(200).send(rate))
     .catch((error) => {
-      console.log('error', error)
       res.status(500).send(error)
     });
   },
