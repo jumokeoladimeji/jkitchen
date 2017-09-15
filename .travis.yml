@@ -23,8 +23,26 @@ before_script:
   - npm install -g bower istanbul sequelize-cli
   - bower install
   - redis-server
+  - cp ./config/travis/data.tar ~
+  - sudo service redis-server stop
+  - sleep 10
+  - sudo cat /etc/redis/redis.conf
+  - sudo sed -i 's|appendonly no|appendonly yes|g' /etc/redis/redis.conf
+  - sudo sed -i "s|# requirepass foobared|requirepass ${DNB_ENV_APP_S2_DB_PASS}|g" /etc/redis/redis.conf
+  - sudo cat /etc/redis/redis.conf
+  - sudo ls -al  /var/lib/redis
+  - sudo find /var/lib/redis -mindepth 1 -delete
+  - sudo tar -xvf ~/data.tar -C /var/lib/redis --strip 1 
+  - sudo chown redis:redis /var/lib/redis/appendonly.aof
+  - sudo chmod 660 /var/lib/redis/appendonly.aof 
+  - sudo ls -al  /var/lib/redis
+  - sudo service redis-server start
+  - sleep 20
 
 script: 
   - sequelize db:migrate
+  - sudo cat /var/log/redis/redis-server.log
+  - swagger project start &
+  - sleep 10
   - istanbul cover ./node_modules/mocha/bin/_mocha tests/server/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
   
