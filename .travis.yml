@@ -22,6 +22,7 @@ before_script:
   - psql -c 'create database database_production;' -U postgres
   - npm install -g bower istanbul sequelize-cli
   - bower install
+  - redis-server
 
 script: 
   - sequelize db:migrate
