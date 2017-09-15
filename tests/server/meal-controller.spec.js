@@ -8,9 +8,13 @@ const bcrypt = require('bcryptjs');
 const index = require('../../index');
 
 const Meal = require('../../server/models').Meal;
+const Rating = require('../../server/models').Rating;
+const User = require('../../server/models').User;
+
+
+
 chai.use(require('chai-http'));
 let mealData = { title: 'Suya meat', price: 50, available_quantity: 10, image:'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description:'assorted meat'}
-
 
 describe('Meal Controller',  () => {
   before(() => {
@@ -40,15 +44,12 @@ describe('Meal Controller',  () => {
           done()
       })
     });
-
-  });
-
+  })
   describe('list Function',  () => {
     it('should return all Meals', (done) => {
       chai.request(index)
         .get('/api/meals')
         .then(function(res) {
-          console.log(res.body, 'res!!!!!')
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.an('array')
@@ -79,6 +80,7 @@ describe('Meal Controller',  () => {
       })
     });
   });
+
   describe('getFiveMostPopularMeals Function',  () => {
     
     before(() => {
@@ -131,6 +133,42 @@ describe('Meal Controller',  () => {
       })
     });
   });
+
+  describe('Ratemeal Function',  () => {
+    it('should rate one Meal', (done) => {
+      let userData = { username: 'EgyptRuns', password:'$32#hdsersd', name: 'Egypt Runs', email:'egypt@yahoo.com', phoneNumber:'2902390033' }
+      let createdUserId  
+
+      User
+        .create(userData)
+        .then(function(user){
+          createdUserId = user.id
+          Meal
+          .find({ 
+            where: {
+              title: mealData.title
+            }
+          })
+          .then(function(meal){
+            let mealId = meal.dataValues.id
+            let rateData = {ratings: 3}
+            chai.request(index)
+              .post(`/api/${createdUserId}/${mealId}/ratings`)
+              // .post(`/api/3/7/ratings`)
+              .send(rateData)
+              .then(function(res) {
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('object')
+                done()
+            })
+                
+          })
+        })
+
+    });
+  })
+
   describe('delete Function',  () => {
     it('should delete one Meal', (done) => {
       Meal
@@ -152,5 +190,5 @@ describe('Meal Controller',  () => {
       });
     });
   });
-});
+})
 

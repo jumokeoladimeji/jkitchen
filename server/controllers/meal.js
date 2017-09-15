@@ -21,18 +21,16 @@ module.exports = {
 
   list: (req, res) => {
     return Meal
-      .findAll(
-      {
-      // include: [
-      //   {
-      //     model: Rating,
-      //      as: 'ratings'
-      //   }
-      // ]
-    }
-    )
+      .findAll({
+      include: [
+        {
+          model: Rating,
+           as: 'ratings'
+        }
+      ]})
       .then((meals) => res.status(200).send(meals))
       .catch((error) => {
+        console.log(error)
         res.status(500).send(error)
       });
   },
@@ -45,7 +43,7 @@ module.exports = {
         let meal = JSON.parse(reply)
         // create a sorted set in redis for popular meals
         // when count is greater than 3, add the meal to popular meals
-        if(meal.count > 3) {
+        if (meal.count > 1) {
           client.zincrby('popularMeals', meal.count, 1, JSON.stringify(meal))
         }
         else{
@@ -55,7 +53,20 @@ module.exports = {
       }
     });
     return Meal
-      .findById(req.params.mealId)
+      .findById(req.params.mealId, {
+        include: [{
+          model: Rating,
+          as: 'ratings',
+        }
+        // ,{
+        //   model: Comment,
+        //   as: 'comments'
+        // }, {
+        //   model: MealOrderDetail,
+        //   as: 'mealOrderDetails'
+        // }
+        ]
+      })
       .then(meal => {
         if (!meal) {
           return res.status(404).send({
@@ -70,6 +81,7 @@ module.exports = {
         });
       })
       .catch((error) =>{
+        console.log(error, 'errekkerkker')
         res.status(500).send(error)
       });
   },
@@ -84,22 +96,20 @@ module.exports = {
   },
   update: (req, res) => {
     return Meal
-      .findById(req.params.mealId)
-      // {
-      //   include: [{
-      //     model: Rating,
-      //     as: 'ratings',
-      //   }
-      //   ,{
-      //     model: Comment,
-      //     as: 'comments'
-      //   }, {
-      //     model: MealOrderDetail,
-      //     as: 'mealOrderDetail'
-      //   }],
-      //   order: [
-      //     ['createdAt', 'DESC'],
-      //   ]})
+      .findById(req.params.mealId, {
+        include: [{
+          model: Rating,
+          as: 'ratings',
+        }
+        // ,{
+        //   model: Comment,
+        //   as: 'comments'
+        // }, {
+        //   model: MealOrderDetail,
+        //   as: 'mealOrderDetails'
+        // }
+        ]
+      })
       .then(meal => {
         if (!meal) {
           return res.status(404).send({
@@ -116,7 +126,9 @@ module.exports = {
           })
           .then((updatedMeal) => res.status(200).send(updatedMeal))
       })
-      .catch((error) => res.status(500).send(error));
+      .catch((error) =>{
+        console.log(error, 'errekkerkker')
+       res.status(500).send(error)});
   },
 
   destroy: (req, res) => {
