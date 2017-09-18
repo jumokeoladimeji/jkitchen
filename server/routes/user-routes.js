@@ -1,4 +1,4 @@
-const userController = require('../../server/controllers/userController');
+const userController = require('../../server/controllers/user');
 
 module.exports = (app) => {
   app.post('/api/user/signup', userController.signup);

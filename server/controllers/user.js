@@ -130,7 +130,22 @@ module.exports = {
             message: error
         });
       });
+  },
+  /**
+ * User authorizations routing middleware
+ */
+  hasAuthorization: (req, res, next) => {
+    if (req.user.role == 'admin') {
+      return next();
+    } else {
+      return res.send(403, {
+        message: 'User is not authorized'
+      });
+    }
   }
+
+
+
 }
 
 
