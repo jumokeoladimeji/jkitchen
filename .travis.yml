@@ -17,12 +17,9 @@ before_install:
 
 before_script:
   - psql -c 'create database jkitchen;' -U postgres
-  - psql -c 'create database jkitchentest;' -U postgres
-  - psql -c 'create database database_production;' -U postgres
   - npm install -g bower istanbul sequelize sequelize-cli
   - bower install
 
 script: 
-  - sequelize db:migrate
   - istanbul cover ./node_modules/mocha/bin/_mocha tests/server/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
   
