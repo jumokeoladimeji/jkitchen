@@ -129,12 +129,13 @@ module.exports = {
               // delete meal from the mostPopularMeals set
               client.srem('mostPopularMeals', mealToUpdate)
               // add updated meal to the set
-              client.add('mostPopularMeals', JSON.stringify(updatedMeal))
+              client.sadd('mostPopularMeals', JSON.stringify(updatedMeal))
               res.status(200).send(updatedMeal)
             })
         }
       })
       .catch((error) =>{
+        console.log('error|||||||', error)
         res.status(500).send(error)
       });
   },

@@ -1,12 +1,19 @@
 const orderController = require('../../server/controllers/order')
 
 module.exports = (app) => {
-  app.post('/api/order', orderController.create);
-  app.get('/api/order', orderController.listOrderByUser);
-  app.get('/api/order', orderController.listPendingOrders);
-  app.get('/api/order', orderController.listAll);
-  app.get('/api/order/:orderId', orderController.getOne);
-  app.put('/api/order/:orderId', orderController.update);
-  app.delete('/api/order/:orderId', orderController.destroy);
+  app.route('/api/users/:userId/orders')
+    .post(orderController.create)
+    .get(orderController.listOrderByUser);
+  app.route('/api/users/:userId/admin/orders/pendingOrders')
+    .get(orderController.listPendingOrders);
+  app.route('/api/users/:userId/admin/orders/unassignedOrders')
+    .get(orderController.listUnassignedOrders);
+  app.route('/api/users/:userId/admin/orders/listAll')
+    .get(orderController.listAll);
+  app.route('/api/users/:userId/orders/:orderId')
+    .get(orderController.getOne)
+    .put(orderController.update)
+    .delete(orderController.destroy);
 }
+
 
