@@ -6,7 +6,7 @@ const _ = require('lodash'),
   csvFilePath='./mealData.csv';
 
 psql.connect();
-const task = 'INSERT INTO "Meals"(title,price,available_quantity,image,description,created_at,updated_at) values($1, $2, $3, $4, $5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)'
+const task = 'INSERT INTO "Meals"(title,price,available_quantity,image,description,createdAt,updatedAt) values($1, $2, $3, $4, $5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)'
 
 
 csv()

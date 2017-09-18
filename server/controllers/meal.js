@@ -6,7 +6,7 @@ const MealOrderDetail = require('../models').MealOrderDetail
 module.exports = {
   // Only admin can create and update meal
   create(req, res){
-    return Meal
+    Meal
       .create({
         title: req.body.title,
         price: req.body.price,
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   list(req, res){
-    return Meal
+    Meal
       .findAll({
       include: [
         {
@@ -96,7 +96,7 @@ module.exports = {
 
   },
   update(req, res){
-    return Meal
+    Meal
       .findById(req.params.mealId, {
         include: [{
           model: Rating,
@@ -140,7 +140,7 @@ module.exports = {
   },
 
   destroy(req, res){
-    return Meal
+    Meal
       .findById(req.params.mealId)
       .then(meal => {
         if (!meal) {
