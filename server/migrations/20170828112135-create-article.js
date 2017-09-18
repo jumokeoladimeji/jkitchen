@@ -1,33 +1,28 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Orders', {
+    queryInterface.createTable('Articles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      expectedTimeOfDelivery: {
-        type: Sequelize.DATE
-      },
-      status: {
+      title: {
         type: Sequelize.STRING
       },
-      confirmDelivery: {
-        type: Sequelize.BOOLEAN
+      content: {
+        type: Sequelize.TEXT
       },
-      assignedTo: {
+      excerpt: {
         type: Sequelize.STRING
       },
-      amount: {
-        type: Sequelize.TEXT
+      imageURL: {
+        type: Sequelize.STRING
       },
-      extraNotes: {
-        type: Sequelize.TEXT
-      },
-      rate: {
-        type: Sequelize.INTEGER
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -38,7 +33,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
-      }, 
+      },
       userId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
@@ -49,6 +44,5 @@ module.exports = {
         }
       }
     }),
-  down: (queryInterface) => queryInterface.dropTable('Orders')
+  down: (queryInterface) => queryInterface.dropTable('Articles')
 };
-

@@ -4,16 +4,16 @@ const fs        = require('fs');
 const path      = require('path');
 const Sequelize = require('sequelize');
 const basename  = path.basename(module.filename);
-const env       = process.env.NODE_ENV || 'development';
+const env       = 'development' || process.env.NODE_ENV;
 const config    = require(__dirname + '/../config/config.json')[env];
 const db        = {};
 
 let sequelize
-if (config.env) {
-  sequelize = new Sequelize(process.env[config.env]);
-} else {
+// if (config.db_env) {
+//   sequelize = new Sequelize(process.env[config.db_env]);
+// } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+// }
 
 fs
   .readdirSync(__dirname)

@@ -12,11 +12,9 @@ const webpackConfigProd = require('./webpack.config.prod.js');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
-
 client.on('connect', () => {
     console.log('connected');
 });
-
 app.use(logger('dev'));
 app.use(express.static(path.resolve(`${__dirname}/public`)));
 app.use(bodyParser.json());
@@ -38,16 +36,19 @@ app.use(webpackHotMiddleware(compiler, {
 );
 
 require('./server/routes')(app);
+require('./server/routes/user-routes')(app);
+require('./server/routes/meal-routes')(app);
+require('./server/routes/rating-routes')(app);
+require('./server/routes/order-routes')(app);
+
 
 app.get('*', (request, response) => {
   response.sendFile(path.resolve(`${__dirname}/public/index.html`));
 });
 
 app.listen(PORT, (err) => {
-  if (err) {
-    console.log(err);
-  }
   console.log(`The server is running on localhost PORT: ${PORT}`);
 });
+
 
 module.exports = app;

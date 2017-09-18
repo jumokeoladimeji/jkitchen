@@ -1,32 +1,14 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable('Orders', {
+    queryInterface.createTable('MealOrderDetails', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      expectedTimeOfDelivery: {
-        type: Sequelize.DATE
-      },
-      status: {
-        type: Sequelize.STRING
-      },
-      confirmDelivery: {
-        type: Sequelize.BOOLEAN
-      },
-      assignedTo: {
-        type: Sequelize.STRING
-      },
-      amount: {
-        type: Sequelize.TEXT
-      },
-      extraNotes: {
-        type: Sequelize.TEXT
-      },
-      rate: {
+      quantity: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -38,17 +20,25 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
-      }, 
-      userId: {
+      },
+      mealId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
-          model: 'Users',
+          model: 'Meals',
           key: 'id',
-          as: 'userId'
+          as: 'mealId',
+        },
+      },
+      orderId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Orders',
+          key: 'id',
+          as: 'orderId'
         }
       }
     }),
-  down: (queryInterface) => queryInterface.dropTable('Orders')
+  down: (queryInterface) => queryInterface.dropTable('MealOrderDetails')
 };
-
