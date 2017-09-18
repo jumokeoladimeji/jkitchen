@@ -4,7 +4,7 @@ const MealOrderDetail = require('../models').MealOrderDetail
 const lodash = require('lodash');
 
 module.exports = {
-  create: (req, res) => {
+  create(req, res) {
     return Order
       .create({
         expectedTimeOfDelivery: req.body.expectedTimeOfDelivery,
@@ -28,7 +28,7 @@ module.exports = {
       .catch(error => res.status(400).send(error));
   },
   
-  listOrderByUser: (req, res) => {
+  listOrderByUser(req, res) {
     return Order
       .findAll({
         where: {
@@ -47,7 +47,7 @@ module.exports = {
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error));
   },
-  listPendingOrders: (req, res) => {
+  listPendingOrders(req, res) {
     return Order
       .findAll({
         where: {
@@ -66,7 +66,7 @@ module.exports = {
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error));
   },
-  listUnassignedOrders: (req, res) => {
+  listUnassignedOrders(req, res) {
     return Order
       .findAll({
         where: {assignedTo: null}
@@ -82,7 +82,7 @@ module.exports = {
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error));
   },
-  listAll: (req, res) => {
+  listAll(req, res) {
     return Order
       .findAll({
         // include: [{
@@ -97,7 +97,7 @@ module.exports = {
       .then((orders) => res.status(200).send(orders))
       .catch((error) => res.status(400).send(error));
   },
-  getOne: (req, res) => {
+  getOne(req, res) {
     return Order
       .find({
         where: {
@@ -125,7 +125,7 @@ module.exports = {
   },
   // that means the support person assigns orders to a delivery person, 
   // then the system sends an email to he user after delivery to rate
-  update: (req, res) => {
+  update(req, res) {
     return Order
       .find({
         where: {
@@ -171,7 +171,7 @@ module.exports = {
       });
   },
 
-  destroy: (req, res) => {
+  destroy(req, res) {
     return Order
       .find({
         where: {

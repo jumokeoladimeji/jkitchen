@@ -4,7 +4,7 @@ const Comment = require('../models').Comment;
 
 module.exports = {
   // Only admin can create and update Article
-  create: (req, res) => {
+  create(req, res) {
     const newArticle = {
       title: req.body.title,
       content: req.body.content,
@@ -23,14 +23,14 @@ module.exports = {
       });
   },
 
-  list: (req, res) => {
+  list(req, res) {
     return Article
       .findAll()
       .then((articles) => res.status(200).send(articles))
       .catch((error) => res.status(500).send(error));
   },
 
-  getOne: (req, res) => {
+  getOne(req, res) {
     return Article
       .findById(req.params.articleId)
       .then((article) => {
@@ -46,7 +46,7 @@ module.exports = {
       });
   },
 
-  update: (req, res) => {
+  update(req, res) {
     return Article
       .findById(req.params.articleId)
       .then(article => {
@@ -68,7 +68,7 @@ module.exports = {
       .catch((error) => res.status(500).send(error));
   },
 
-  destroy: (req, res) => {
+  destroy(req, res) {
     return Article
       .findById(req.params.articleId)
       .then(article => {
@@ -84,7 +84,7 @@ module.exports = {
       .catch((error) => res.status(500).send(error));
   },
 
-  hasAuthorization: (req, res, next) => {
+  hasAuthorization(req, res, next){
     if (req.blog.user.id !== req.user.id) {
         return res.status(403).send({message: 'User is not authorized'
         });

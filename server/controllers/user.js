@@ -5,10 +5,10 @@ const User = require('../models').User,
 
 
 module.exports = {
-  hashPassword: (password) => {
+  hashPassword(password) {
     return bcrypt.hashSync(password, 12);
   },
-  signup: (req, res) => {
+  signup(req, res) {
     userDetails = req.body
 
     if (!userDetails.email) {
@@ -50,7 +50,7 @@ module.exports = {
         res.status(500).send({message: error})
       })
   },
-  signin: (req, res) => {
+  signin(req, res) {
     userDetails = req.body
     if (!userDetails.email) {
       return res.status(422).send({ message: 'You must enter an email address.'});
@@ -96,10 +96,10 @@ module.exports = {
         });
       });
   },
-  signout : (req, res) => {
+  signout(req, res) {
     res.redirect('/');
   },
-  updateUser: (req, res) => {
+  updateUser(req, res) {
     User
       .findById(req.params.userId)
       .then(user => {
@@ -134,7 +134,7 @@ module.exports = {
   /**
  * User authorizations routing middleware
  */
-  hasAuthorization: (req, res, next) => {
+  hasAuthorization(req, res, next) {
     if (req.user.role == 'admin') {
       return next();
     } else {
@@ -143,8 +143,6 @@ module.exports = {
       });
     }
   }
-
-
 
 }
 

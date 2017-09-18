@@ -5,7 +5,7 @@ const MealOrderDetail = require('../models').MealOrderDetail
 
 module.exports = {
   // Only admin can create and update meal
-  create: (req, res) => {
+  create(req, res){
     return Meal
       .create({
         title: req.body.title,
@@ -20,7 +20,7 @@ module.exports = {
       });
   },
 
-  list: (req, res) => {
+  list(req, res){
     return Meal
       .findAll({
       include: [
@@ -35,7 +35,7 @@ module.exports = {
       });
   },
 
-  getOne: (req, res) => {
+  getOne(req, res){
    mealId = req.params.mealId
     // get meal from redis cache
     client.get(`meal${mealId}`, function(err, reply) {
@@ -85,7 +85,7 @@ module.exports = {
     });
 
   },
-  getMostPopularMeals: (req, res) => {
+  getMostPopularMeals(req, res){
 
     client.smembers('mostPopularMeals', function(err, reply){
       if(err){
@@ -95,7 +95,7 @@ module.exports = {
     });
 
   },
-  update: (req, res) => {
+  update(req, res){
     return Meal
       .findById(req.params.mealId, {
         include: [{
@@ -139,7 +139,7 @@ module.exports = {
       });
   },
 
-  destroy: (req, res) => {
+  destroy(req, res){
     return Meal
       .findById(req.params.mealId)
       .then(meal => {

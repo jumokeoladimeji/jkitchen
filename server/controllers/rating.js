@@ -3,7 +3,7 @@ const Rating = require('../models').Rating;
 const Comment = require('../models').Comment;
 
 module.exports = {
-  rateMeal: (req, res) => { 
+  rateMeal(req, res) { 
     return  Rating.create({
       userId: req.params.userId,
       mealId: req.params.mealId,
@@ -14,7 +14,7 @@ module.exports = {
       res.status(500).send(error)
     });
   },
-  // incrementMealRate: (req, res) => {
+  // incrementMealRate(req, res) {
   //   Rating.findById(req.params.rateId)
   //     .then(rate => {
   //       return rate.increment(
@@ -25,7 +25,7 @@ module.exports = {
 
   //   })
   // },
-  // decrementMealRate: (req, res) => {
+  // decrementMealRate(req, res) {
   //   Rating.findById(req.params.rateId)
   //     .then(rate => {
   //       return rate.increment(
@@ -36,7 +36,7 @@ module.exports = {
 
   //   })
   // },
-  // updateRate: (req, res) => {
+  // updateRate(req, res) {
   //   Rating.findById(req.params.rateId)
   //     .then(rate => {
   //       return rate.update({
