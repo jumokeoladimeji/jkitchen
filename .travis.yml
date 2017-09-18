@@ -3,7 +3,6 @@ node_js:
   - 6
   - node
 sudo: false
-
 cache:
   directories:
     - "node_modules"
