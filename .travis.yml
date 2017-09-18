@@ -19,7 +19,7 @@ before_script:
   - psql -c 'create database jkitchen;' -U postgres
   - psql -c 'create database jkitchentest;' -U postgres
   - psql -c 'create database database_production;' -U postgres
-  - npm install -g bower istanbul
+  - npm install -g bower istanbul sequelize-cli
   - bower install
 
 script: 
