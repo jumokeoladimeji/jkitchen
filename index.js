@@ -35,11 +35,11 @@ app.use(webpackHotMiddleware(compiler, {
   })
 );
 
-require('./server/routes')(app);
-require('./server/routes/user-routes')(app);
-require('./server/routes/meal-routes')(app);
-require('./server/routes/rating-routes')(app);
-require('./server/routes/order-routes')(app);
+// require('./server/routes')(app);
+// require('./server/routes/user-routes')(app);
+// require('./server/routes/meal-routes')(app);
+// require('./server/routes/rating-routes')(app);
+// require('./server/routes/order-routes')(app);
 
 
 app.get('*', (request, response) => {
