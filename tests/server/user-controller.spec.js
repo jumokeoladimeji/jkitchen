@@ -6,7 +6,7 @@ const assert = chai.assert;
 const should = chai.should();
 const bcrypt = require('bcryptjs');
 const index = require('../../index');
-const userController = require('../../server/controllers/userController');
+const userController = require('../../server/controllers/user');
 
 const User = require('../../server/models').User;
 let userData = { username: 'Jim', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
