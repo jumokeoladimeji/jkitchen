@@ -1,22 +1,33 @@
-const Order = require('../models').Order,
-  Menu = require('../models').Menu;
+const Order = require('../models').Order
+const Meal = require('../models').Meal
+const MealOrderDetail = require('../models').MealOrderDetail
+const lodash = require('lodash');
 
 module.exports = {
   create: (req, res) => {
     return Order
       .create({
-        expected_time_of_delivery: req.body.expected_time_of_delivery,
+        expectedTimeOfDelivery: req.body.expectedTimeOfDelivery,
         userId: req.params.userId,
         amount: req.body.amount,
-        addendum: req.body.addendum,
+        extraNotes: req.body.extraNotes
       })
-      .then(Order => res.status(201).send(Order))
+      .then(order => {
+        _.map(req.body.mealIds, (mealId) => {
+          return MealOrderDetails
+            .create({
+              quantity: req.body.quantity,
+              mealId: req.params.mealId,
+              orderId: order.id,
+            })
+        });
+      })
+      .then(mealOrderDetails =>{
+        res.status(200).send(mealOrderDetails)
+      })
       .catch(error => res.status(400).send(error));
   },
-  // TODO: List all orders by all users so admin and support person can view orders
-  // A user can only view his order
-  // list orders that are pending so support person can view 
-  // and assign to someone for delivery
+  
   listOrderByUser: (req, res) => {
     return Order
       .findAll({
@@ -25,12 +36,12 @@ module.exports = {
           userId: req.params.userId,
         },
         include: [{
-          model: Menu,
-          as: 'menus',
+          model: MealOrderDetail,
+          as: 'mealOrderDetails',
         }],
         order: [
           ['createdAt', 'DESC'],
-          [{ model: Menu, as: 'menus' }, 'createdAt', 'ASC'],
+          [{ model: MealOrderDetail, as: 'mealOrderDetails' }, 'createdAt', 'ASC'],
         ],
       })
       .then((order) => res.status(200).send(order))
@@ -41,15 +52,32 @@ module.exports = {
       .findAll({
         where: {
           status: 'pending'
-        },
-        include: [{
-          model: Menu,
-          as: 'menus',
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Menu, as: 'menus' }, 'createdAt', 'ASC'],
-        ],
+        }
+        // ,
+        // include: [{
+        //   model: Meal,
+        //   as: 'meals',
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        // ],
+      })
+      .then((order) => res.status(200).send(order))
+      .catch((error) => res.status(400).send(error));
+  },
+  listUnassignedOrders: (req, res) => {
+    return Order
+      .findAll({
+        where: {assignedTo: null}
+        // include: [{
+        //   model: Meal,
+        //   as: 'meals',
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        // ],
       })
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error));
@@ -57,14 +85,14 @@ module.exports = {
   listAll: (req, res) => {
     return Order
       .findAll({
-        include: [{
-          model: Menu,
-          as: 'menus',
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Menu, as: 'menus' }, 'createdAt', 'ASC'],
-        ],
+        // include: [{
+        //   model: Meal,
+        //   as: 'meals',
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        // ],
       })
       .then((orders) => res.status(200).send(orders))
       .catch((error) => res.status(400).send(error));
@@ -75,14 +103,15 @@ module.exports = {
         where: {
           id: req.params.orderId,
           userId: req.params.userId,
-        },include: [{
-          model: Menu,
-          as: 'menus',
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Menu, as: 'menus' }, 'createdAt', 'ASC'],
-        ],
+        }
+        // ,include: [{
+        //   model: Meal,
+        //   as: 'meals',
+        // }],
+        // order: [
+        //   ['createdAt', 'DESC'],
+        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        // ],
       })
       .then(order => {
         if (!order) {
@@ -94,17 +123,20 @@ module.exports = {
       })
       .catch(error => res.status(500).send(error));
   },
+  // that means the support person assigns orders to a delivery person, 
+  // then the system sends an email to he user after delivery to rate
   update: (req, res) => {
     return Order
       .find({
         where: {
           id: req.params.OrderId,
           userId: req.params.userId,
-        },
-        include: [{
-          model: Menu,
-          as: 'menus',
-        }],
+        }
+      //   ,
+      //   include: [{
+      //     model: Meal,
+      //     as: 'meals',
+      //   }],
       })
       .then(order => {
         if (!order) {
@@ -115,18 +147,28 @@ module.exports = {
 
         return Order
           .update({
-            expected_time_of_delivery: req.body.expected_time_of_delivery || Order.expected_time_of_delivery,
+            expectedTimeOfDelivery: req.body.expectedTimeOfDelivery || Order.expectedTimeOfDelivery,
             status: req.body.status || Order.status,
-            confirm_delivery: req.body.confirm_delivery || Order.confirm_delivery,
+            confirmDelivery: req.body.confirmDelivery || Order.confirmDelivery,
             assignedTo: req.body.assignedTo || Order.assignedTo,
             amount: req.body.amount || Order.amount,
-            addendum: req.body.addendum || Order.addendum,
+            extraNotes: req.body.extraNotes || Order.extraNotes,
             rate: req.body.rate || Order.rate,
           })
-          .then(updatedOrder => res.status(200).send(updatedOrder))
-          .catch(error => res.status(400).send(error));
+          .then(updatedOrder => {
+            // that means the admin assigns order, then the system send an email to he user to rate
+
+            // admin check if it has been delivered
+            // if(updatedOrder.confirmDelivery){
+            //   // then send email
+            // use nodemailer to send email
+            // }
+            res.status(200).send(updatedOrder)
+          })
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => {
+        res.status(400).send(error)
+      });
   },
 
   destroy: (req, res) => {
@@ -137,14 +179,14 @@ module.exports = {
           userId: req.params.userId,
         },
       })
-      .then(Order => {
-        if (!Order) {
+      .then(order => {
+        if (!order) {
           return res.status(404).send({
             message: 'Order Not Found',
           });
         }
 
-        return Order
+        return order
           .destroy()
           .then(() => res.status(204).send())
           .catch(error => res.status(400).send(error));
