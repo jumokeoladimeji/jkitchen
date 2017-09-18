@@ -1,6 +1,7 @@
 const Meal = require('../models').Meal;
 const Rating = require('../models').Rating;
 const Comment = require('../models').Comment;
+const MealOrderDetail = require('../models').MealOrderDetail
 
 module.exports = {
   // Only admin can create and update meal
@@ -56,15 +57,13 @@ module.exports = {
             include: [{
               model: Rating,
               as: 'ratings',
-            }
-            // ,{
-            //   model: Comment,
-            //   as: 'comments'
-            // }, {
-            //   model: MealOrderDetail,
-            //   as: 'mealOrderDetails'
-            // }
-            ]
+            },{
+              model: Comment,
+              as: 'comments'
+            }, {
+              model: MealOrderDetail,
+              as: 'mealOrderDetails'
+            }]
           })
           .then(meal => {
             if (!meal) {
@@ -102,15 +101,13 @@ module.exports = {
         include: [{
           model: Rating,
           as: 'ratings',
-        }
-        // ,{
-        //   model: Comment,
-        //   as: 'comments'
-        // }, {
-        //   model: MealOrderDetail,
-        //   as: 'mealOrderDetails'
-        // }
-        ]
+        },{
+          model: Comment,
+          as: 'comments'
+        }, {
+          model: MealOrderDetail,
+          as: 'mealOrderDetails'
+        }]
       })
       .then(meal => {
         if (!meal) {
@@ -118,18 +115,28 @@ module.exports = {
             message: 'Meal Not Found',
           });
         }
-        return meal
-          .update({
-            title: req.body.title || meal.title,
-            price: req.body.price || meal.price,
-            available_quantity: req.body.available_quantity || meal.available_quantity,
-            image: req.body.image || meal.image,
-            description: req.body.description || meal.description,
-          })
-          .then((updatedMeal) => res.status(200).send(updatedMeal))
+        else{
+          return meal
+            .update({
+              title: req.body.title || meal.title,
+              price: req.body.price || meal.price,
+              available_quantity: req.body.available_quantity || meal.available_quantity,
+              image: req.body.image || meal.image,
+              description: req.body.description || meal.description,
+            })
+            .then((updatedMeal) => {
+              mealToUpdate = JSON.stringify(meal)
+              // delete meal from the mostPopularMeals set
+              client.srem('mostPopularMeals', mealToUpdate)
+              // add updated meal to the set
+              client.add('mostPopularMeals', JSON.stringify(updatedMeal))
+              res.status(200).send(updatedMeal)
+            })
+        }
       })
       .catch((error) =>{
-       res.status(500).send(error)});
+        res.status(500).send(error)
+      });
   },
 
   destroy: (req, res) => {
@@ -147,5 +154,4 @@ module.exports = {
       })
       .catch((error) => res.status(500).send(error));
   }
-  // return user.decrement('my-integer-field', {by: 2})
 };
