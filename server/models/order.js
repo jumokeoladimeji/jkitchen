@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
@@ -9,19 +9,17 @@ module.exports = (sequelize, DataTypes) => {
     amount: DataTypes.TEXT,
     extraNotes: DataTypes.TEXT,
     rate: { type: DataTypes.INTEGER, defaultValue: 0 }
-  });
+  })
 
   Order.associate = (models) => {
     Order.belongsTo(models.User, {
       foreignKey: 'userId',
-      onDelete: 'CASCADE',
-    });
+      onDelete: 'CASCADE'
+    })
     Order.hasMany(models.MealOrderDetail, {
       foreignKey: 'orderId',
-      as: 'mealOrderDetails',
-    });
+      as: 'mealOrderDetails'
+    })
   }
-  return Order;
-};
-
-
+  return Order
+}

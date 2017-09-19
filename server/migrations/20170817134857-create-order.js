@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Orders', {
@@ -38,7 +38,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
-      }, 
+      },
       userId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
@@ -50,5 +50,5 @@ module.exports = {
       }
     }),
   down: (queryInterface) => queryInterface.dropTable('Orders')
-};
+}
 

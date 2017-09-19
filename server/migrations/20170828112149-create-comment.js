@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  up: (queryInterface, Sequelize) => 
+  up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
@@ -18,15 +18,15 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },      
+      },
       userId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
           model: 'Users',
           key: 'id',
-          as: 'userId',
-        },
+          as: 'userId'
+        }
       },
       mealId: {
         type: Sequelize.INTEGER,
@@ -39,4 +39,4 @@ module.exports = {
       }
     }),
   down: (queryInterface) => queryInterface.dropTable('Comments')
-};
+}

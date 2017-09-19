@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  up: (queryInterface, Sequelize) => 
+  up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Users', {
       id: {
         allowNull: false,
@@ -18,7 +18,7 @@ module.exports = {
       },
       role: {
         type: Sequelize.STRING,
-        defaultValue: 'user' 
+        defaultValue: 'user'
       },
       email: {
         type: Sequelize.STRING
@@ -47,4 +47,4 @@ module.exports = {
       }
     }),
   down: (queryInterface) => queryInterface.dropTable('Users')
-};
+}

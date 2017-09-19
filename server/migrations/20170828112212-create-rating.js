@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Ratings', {
@@ -27,8 +27,8 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-          as: 'userId',
-        },
+          as: 'userId'
+        }
       },
       mealId: {
         type: Sequelize.INTEGER,
@@ -41,4 +41,4 @@ module.exports = {
       }
     }),
   down: (queryInterface) => queryInterface.dropTable('Ratings')
-};
+}

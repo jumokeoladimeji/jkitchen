@@ -1,37 +1,35 @@
-const User = require('../models').User,
-  Order = require('../models').Order;
-  bcrypt = require('bcryptjs')
-  jwt = require('jsonwebtoken');
-
+const User = require('../models').User
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
-  hashPassword(password) {
-    return bcrypt.hashSync(password, 12);
+  hashPassword (password) {
+    return bcrypt.hashSync(password, 12)
   },
-  signup(req, res) {
-    userDetails = req.body
+  signup (req, res) {
+    const userDetails = req.body
 
     if (!userDetails.email) {
-      return res.status(422).send({ message: 'You must enter an email address.'});
+      return res.status(422).send({ message: 'You must enter an email address.' })
     }
     if (!userDetails.name) {
-      return res.status(422).send({ message: 'You must enter your full name.'});
+      return res.status(422).send({ message: 'You must enter your full name.' })
     }
-    if (!userDetails.username){
-      return res.status(422).send({ message: 'You must enter a username.' });
+    if (!userDetails.username) {
+      return res.status(422).send({ message: 'You must enter a username.' })
     }
     if (!userDetails.password) {
-      return res.status(422).send({ message: 'You must enter a password.' });
+      return res.status(422).send({ message: 'You must enter a password.' })
     }
     User
-      .find({ 
+      .find({
         where: {
           email: userDetails.email
         }
       })
-      .then(existingUser =>{
+      .then(existingUser => {
         if (existingUser) {
-          return res.status(422).send({ error: 'That email address is already in use.' });
+          return res.status(422).send({ error: 'That email address is already in use.' })
         }
         // userDetails.hashedPassword = hashPassword(userDetails.password)
         User
@@ -46,20 +44,20 @@ module.exports = {
           })
           .then(newUser => res.status(200).send(newUser))
       })
-      .catch(error => { 
+      .catch(error => {
         res.status(500).send({message: error})
       })
   },
-  signin(req, res) {
-    userDetails = req.body
+  signin (req, res) {
+    const userDetails = req.body
     if (!userDetails.email) {
-      return res.status(422).send({ message: 'You must enter an email address.'});
+      return res.status(422).send({ message: 'You must enter an email address.' })
     }
     if (!userDetails.password) {
-      return res.status(422).send({ message: 'You must enter a password.' });
+      return res.status(422).send({ message: 'You must enter a password.' })
     }
     User
-      .find({ 
+      .find({
         where: {
           email: userDetails.email
         }
@@ -68,21 +66,21 @@ module.exports = {
         if (!user) {
           return res.json({
             message: 'User does not exist'
-          });
+          })
         }
         if (user) {
           const isPasswordValid = bcrypt.compareSync(userDetails.password, user.hashedPassword)
           if (isPasswordValid) {
             // create a token
             const token = jwt.sign(user.dataValues, 'secret', {
-              expiresIn: 1440 
-            });
+              expiresIn: 1440
+            })
             return res.status(200).send({
               message: 'welcome back',
               data: user.dataValues,
               signintoken: token,
               expiresIn: 1440
-            });
+            })
           } else {
             return res.status(401).send({
               message: 'incorrect password'
@@ -90,35 +88,35 @@ module.exports = {
           }
         }
       })
-      .catch((error) =>{
+      .catch((error) => {
         res.status(401).send({
           message: 'Error logging in user', error
-        });
-      });
+        })
+      })
   },
-  signout(req, res) {
-    res.redirect('/');
+  signout (req, res) {
+    res.redirect('/')
   },
-  updateUser(req, res) {
+  updateUser (req, res) {
     User
       .findById(req.params.userId)
       .then(user => {
         if (!user) {
           return res.json({
             message: 'User does not exist'
-          });
+          })
         }
         const userDetails = req.body
         const hashedPasswordToSave = userDetails.password ? bcrypt.hashSync(userDetails.password, 12) : user.hashedPassword
         user
           .update({
-            role: userDetails.role || user.role, 
-            name: userDetails.name || user.name, 
+            role: userDetails.role || user.role,
+            name: userDetails.name || user.name,
             username: userDetails.username || user.username,
-            email: userDetails.email || user.email, 
-            phoneNumber: userDetails.phoneNumber || user.phoneNumber, 
-            imageURL: userDetails.imageURL || user.imageURL, 
-            socialMediaLinks: userDetails.socialMediaLinks || user.socialMediaLinks, 
+            email: userDetails.email || user.email,
+            phoneNumber: userDetails.phoneNumber || user.phoneNumber,
+            imageURL: userDetails.imageURL || user.imageURL,
+            socialMediaLinks: userDetails.socialMediaLinks || user.socialMediaLinks,
             hashedPassword: hashedPasswordToSave
           })
           .then((updatedUser) => {
@@ -127,23 +125,20 @@ module.exports = {
       })
       .catch((error) => {
         res.json({
-            message: error
-        });
-      });
+          message: error
+        })
+      })
   },
   /**
  * User authorizations routing middleware
  */
-  hasAuthorization(req, res, next) {
-    if (req.user.role == 'admin') {
-      return next();
+  hasAuthorization (req, res, next) {
+    if (req.user.role === 'admin') {
+      return next()
     } else {
       return res.send(403, {
         message: 'User is not authorized'
-      });
+      })
     }
   }
-
 }
-
-

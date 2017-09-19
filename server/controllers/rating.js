@@ -1,19 +1,17 @@
-const Meal = require('../models').Meal;
-const Rating = require('../models').Rating;
-const Comment = require('../models').Comment;
+const Rating = require('../models').Rating
 
 module.exports = {
-  rateMeal(req, res) { 
-    return  Rating.create({
+  rateMeal (req, res) {
+    return Rating.create({
       userId: req.params.userId,
       mealId: req.params.mealId,
       ratings: req.body.rating
     })
-    .then((rate) => res.status(200).send(rate))
-    .catch((error) => {
-      res.status(500).send(error)
-    });
-  },
+      .then((rate) => res.status(200).send(rate))
+      .catch((error) => {
+        res.status(500).send(error)
+      })
+  }
   // incrementMealRate(req, res) {
   //   Rating.findById(req.params.rateId)
   //     .then(rate => {
@@ -44,9 +42,9 @@ module.exports = {
   //       })
   //     .then((updatedRate) => {
   //       res.status(200)
-  //     }); 
+  //     }) 
   //   })
   //   .catch((error)=>{
-  //     res.status(500).send(error);
-  //   });
+  //     res.status(500).send(error)
+  //   })
 }
