@@ -8,12 +8,14 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela-joladimeji/jkitchen/badge.svg?branch=master)](https://coveralls.io/github/andela-joladimeji/jkitchen?branch=master)
 
 ## Tools Used
-* `Nodejs`-- It is fast
-* `Postgresql`
-* `Express`
-* `Travis`
-* `redis`
-* `Angular`
+| **Dependency** | **Use** |
+|----------|-------|
+|`Nodejs`|It is fast|
+|`Postgresql`|
+|`Express`|
+|`Travis`|
+|`redis`|
+|`Angular`|
 
 
 ## Postgresql(SQL DB) vs MongoDB (NoSQL DB)
@@ -39,7 +41,11 @@ Run
 
 ### To start the app
 ```
-gulp
+gulp serve
+```
+or
+```
+nodemon index.js
 ```
 
 
