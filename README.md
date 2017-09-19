@@ -80,6 +80,10 @@ sequelize db:seed:all
 
 
 ### To start the app
+* Start redis server
+```
+redis-server 
+```
 ```
 gulp serve
 ```
@@ -100,7 +104,6 @@ Front End Test
 ```
 npm test
 ```
-
 Back End Test
 ```
 gulp server-test 
