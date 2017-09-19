@@ -1,14 +1,14 @@
 require('dotenv').config();
-const express = require('express'),
-app = express(),
-bodyParser = require('body-parser'),
-logger = require('morgan')
-redis = require('redis'),
-client = redis.createClient();
-const db = require('./server/models')
+const express = require('express')
+const app = express();
+const bodyParser = require('body-parser');
+const logger = require('morgan')
+const redis = require('redis');
+const client = redis.createClient();
+const db = require('./server/models');
 
 client.on('connect', () => {
-    console.log('connected');
+  console.log('connected');
 });
 app.use(logger('dev'));
 app.use(express.static(`${__dirname}/public`));
@@ -24,7 +24,5 @@ require('./server/routes/order-routes')(app);
 app.listen(PORT, (err) => {
   console.log(`The server is running on localhost PORT: ${PORT}`);
 });
-
-
 
 module.exports = app;
