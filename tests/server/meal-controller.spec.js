@@ -156,8 +156,7 @@ describe('Meal Controller', () => {
               let mealId = meal.dataValues.id
               let rateData = {ratings: 3}
               chai.request(index)
-                .post(`/api/${createdUserId}/${mealId}/ratings`)
-                // .post(`/api/3/7/ratings`)
+                .post(`/api/users/${createdUserId}/meals/${mealId}/ratings`)
                 .send(rateData)
                 .then(function (res) {
                   expect(res).to.have.status(200);

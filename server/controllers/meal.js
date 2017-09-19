@@ -18,7 +18,7 @@ module.exports = {
       })
       .then((meal) => res.status(200).send(meal))
       .catch((error) => {
-        res.status(500).send(error)
+        res.status(500).send({message: error})
       });
   },
 
@@ -33,7 +33,7 @@ module.exports = {
         ]})
       .then((meals) => res.status(200).send(meals))
       .catch((error) => {
-        res.status(500).send(error)
+        res.status(500).send({message: error})
       });
   },
 
@@ -42,7 +42,7 @@ module.exports = {
     // get meal from redis cache
     client.get(`meal${mealId}`, function (err, reply) {
       if (err) {
-        return res.status(500).send(err)
+        return res.status(500).send({message:err})
       }
       if (reply) {
         let meal = JSON.parse(reply)
@@ -54,7 +54,7 @@ module.exports = {
           meal.count++
           client.set(`meal${mealId}`, JSON.stringify(meal), function(err, reply) {
             if (err) {
-              return res.status(500).send(err)
+              return res.status(500).send({message:err})
             }
             return res.status(200).send(meal);
           });
@@ -86,7 +86,7 @@ module.exports = {
             });
           })
           .catch((error) => {
-            res.status(500).send(error)
+            res.status(500).send({message: error})
           });
       }
     });
@@ -94,8 +94,9 @@ module.exports = {
   getMostPopularMeals (req, res) {
     client.smembers('mostPopularMeals', function (err, reply){
       if (err) {
-        return res.status(500).send(err)
+        return res.status(500).send({message: err})
       }
+      // reply is an array of popular meals
       return res.status(200).send(reply);
     });
   },
@@ -134,7 +135,7 @@ module.exports = {
               client.srem('mostPopularMeals', mealToUpdate)
               // add updated meal to the set
               client.sadd('mostPopularMeals', JSON.stringify(updatedMeal))
-              client.smembers('mostPopularMeals')
+              // client.smembers('mostPopularMeals')
               // update meal in redis string
               client.set(`meal${mealId}`, JSON.stringify(updatedMeal), function(err, updatedMealInCache) {
                 return res.status(200).send(updatedMeal);
@@ -143,7 +144,7 @@ module.exports = {
         }
       })
       .catch((error) => {
-        res.status(500).send(error)
+        res.status(500).send({message: error})
       });
   },
 
@@ -166,6 +167,6 @@ module.exports = {
             res.status(200).send({message: 'Meal deleted.'})
           })
       })
-      .catch((error) => res.status(500).send(error));
+      .catch((error) => res.status(500).send({message: error}));
   }
 };
