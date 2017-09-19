@@ -29,7 +29,7 @@ module.exports = {
       })
       .then(existingUser => {
         if (existingUser) {
-          return res.status(422).send({ error: 'That email address is already in use.' })
+          return res.status(422).send({ message: 'That email address is already in use.' })
         }
         // userDetails.hashedPassword = hashPassword(userDetails.password)
         User
