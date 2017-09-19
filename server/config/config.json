@@ -1,11 +1,13 @@
 {
   "development": {
-    "username": "postgres",
+    "username": "user",
     "password": null,
     "database": "jkitchen",
     "host": "127.0.0.1",
     "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL"
   }
 }
 
- 
