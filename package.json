@@ -4,7 +4,7 @@
   "description": "An app for ordering for meals.",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karna.conf",
+    "test": "karma start karma.conf",
     "start": "node index.js"
   },
   "author": "jumoke",

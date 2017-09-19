@@ -3,6 +3,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
 const index = require('../../index');
+const redis = require('redis')
 const client = redis.createClient();
 
 const Meal = require('../../server/models').Meal;
