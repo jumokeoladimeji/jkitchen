@@ -5,11 +5,11 @@ const assert = chai.assert;
 const index = require('../../index');
 const redis = require('redis')
 let client
-// if (process.env.REDIS_URL) {
-//   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
-// } else {
-client = redis.createClient();
-// }
+if (process.env.REDIS_URL) {
+  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+} else {
+  client = redis.createClient();
+}
 
 const Meal = require('../../server/models').Meal;
 const User = require('../../server/models').User;
