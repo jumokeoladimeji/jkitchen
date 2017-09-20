@@ -31,19 +31,59 @@ const updateMeal = (rate, mealId) => {
       client.set(`meal${mealId}`, JSON.stringify(mealWithRating))
     })
 }
+const updateOrCreateRatings = (mealId, userId, ratings) => {
+  Rating.find({ where: { mealId: mealId, userId } })
+    .then(rating => {
+      if (!rating) {
+      //create rating
+        Rating.create({
+          userId: userId,
+          mealId: mealId,
+          ratings: ratings
+        }).then((newRate) => {
+          return newRate
+        })
+      } else {
+        // update existing rating
+        rating.update({
+          ratings: ratings
+        })
+        .then((updatedRating) => {
+          return updatedRating
+        })
+      }
+    })
+}
 module.exports = {
   rateMeal (req, res) {
+
     const mealId = req.params.mealId
     const ratings = req.body.ratings
+    const userId = req.params.userId
     // check if user has rated before and update
-    return Rating.create({
-      userId: req.params.userId,
-      mealId: mealId,
-      ratings: ratings
-    })
-      .then((rate) => {
-        updateMeal(ratings, mealId)
-        res.status(200).send(rate)
+    //  const createdOrUpdatedRating = updateOrCreateRatings(mealId, userId, ratings)
+    Rating.find({ where: { mealId: mealId, userId } })
+      .then(rating => {
+        if (!rating) {
+        //create rating
+          Rating.create({
+            userId: userId,
+            mealId: mealId,
+            ratings: ratings
+          }).then((newRate) => {
+            updateMeal(newRate, mealId)
+            res.status(200).send(newRate)
+          })
+        } else {
+          // update existing rating
+          rating.update({
+            ratings: ratings
+          })
+          .then((updatedRating) => {
+            updateMeal(updatedRating, mealId)
+            res.status(200).send(updatedRating)
+          })
+        }
       })
       .catch((error) => {
         res.status(500).send(error)
