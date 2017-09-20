@@ -22,7 +22,7 @@
 |Bcrypt|A password hashing library|
 
 
-##Test Tools
+## Test Tools
 | **Dependency** | **Use** |
 |----------|-------|
 |Mocha| JavaScript testing library |
@@ -40,7 +40,7 @@
 * They are fast and reduce latency when there is frequent data read and write
 
 
-###React Vs Angular
+### React Vs Angular
 
 
 ### Set Up locally
@@ -55,7 +55,7 @@ Run
 ```
 
 ### DB set up
-* create a user role named user
+* create a user role named postgres
 
 run
 ```
@@ -84,6 +84,7 @@ sequelize db:seed:all
 ```
 redis-server 
 ```
+* Start app
 ```
 gulp serve
 ```
