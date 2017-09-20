@@ -5,31 +5,29 @@ const assert = chai.assert;
 const index = require('../../index');
 const redis = require('redis')
 let client
-if (process.env.REDIS_URL) {
-  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
-} else {
-  client = redis.createClient();
-}
+// if (process.env.REDIS_URL) {
+//   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+// } else {
+client = redis.createClient();
+// }
 
 const Meal = require('../../server/models').Meal;
 const User = require('../../server/models').User;
+const Rating = require('../../server/models').Rating;
+const Comment = require('../../server/models').Comment;
+const MealOrderDetail = require('../../server/models').MealOrderDetail
 
 chai.use(require('chai-http'));
 let mealData = { title: 'Suya meat', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'assorted meat' }
 
-describe('Meal Controller', () => {
+describe.only('Meal Controller', () => {
   before(() => {
     return Meal.sequelize.sync();
   });
 
   describe('Create Function', () => {
     before((done) => {
-      Meal
-        .destroy({
-          where: {
-            title: mealData.title
-          }
-        })
+      Meal.destroy({where: {title: mealData.title}})
         .then(function () {
           done()
         });
@@ -60,26 +58,40 @@ describe('Meal Controller', () => {
   });
 
   describe('getOne Function', () => {
-    it('should return one Meal', (done) => {
-      Meal
-        .find({
-          where: {
-            title: mealData.title
-          }
-        })
+    it('should return one Meal and save to redis', (done) => {
+      Meal.find({where: {title: mealData.title},
+        include: [{model: Rating,as: 'ratings'}, {model: Comment, as: 'comments'}, {model: MealOrderDetail, as: 'mealOrderDetails'}]
+      })
         .then(function (meal) {
           const mealId = meal.dataValues.id
           chai.request(index)
             .get(`/api/v1/meals/${mealId}`)
             .then(function (res) {
-              expect(res).to.have.status(200);
-              expect(res).to.be.json;
-              expect(res.body).to.be.an('object')
-              // expect(res.body.description).to.have.string('This is white rice and stew with assorted meat')
-              done();
+              client.get(`meal${mealId}`, (err, reply) =>{
+                expect(res).to.have.status(200);
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('object')
+                // expect(reply).to.eql(JSON.stringify(meal.dataValues))
+                done();
+              })
             });
         })
     });
+    // it('should save popular meals', (done) =>{
+    //   Meal.find({where: {title: mealData.title}})
+    //     .then(function (meal) {
+    //       const mealId = meal.dataValues.id
+    //       chai.request(index)
+    //         .get(`/api/v1/meals/${mealId}`)
+    //         .then(function (res) {
+    //           expect(res).to.have.status(200);
+    //           expect(res).to.be.json;
+    //           expect(res.body).to.be.an('object')
+    //           // expect(res.body.description).to.have.string('This is white rice and stew with assorted meat')
+    //           done();
+    //         });
+    //     })
+    // })
   });
 
   describe('MostPopularMeals Function', () => {
@@ -94,31 +106,16 @@ describe('Meal Controller', () => {
     client.sadd('mostPopularMeals', JSON.stringify(mealFive))
 
     it('should return 5 most popularMeals', (done) => {
-      Meal.bulkCreate([mealOne, mealTwo, mealThree, mealFour, mealFive, mealSix])
-        .then(function (meals) {
-          Meal
-            .find({
-              where: {
-                title: mealOne.title
-              }
-            })
-            .then(function (meal) {
-              const mealOneId = meal.dataValues.id
-              chai.request(index)
-                .get(`/api/v1/meals/${mealOneId}`)
-                .then(function (response) {
-                  chai.request(index)
-                    .get('/api/v1/popularMeals')
-                    .then(function (res) {
-                      expect(res).to.have.status(200);
-                      expect(res.body).to.be.an('array')
-                      done();
-                    });
-                });
-            })
-        })
+      chai.request(index)
+        .get('/api/v1/popularMeals')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('array')
+          done();
+        });
     });
   })
+
   describe('update Function', () => {
     it('should update one Meal', (done) => {
       Meal
@@ -164,6 +161,7 @@ describe('Meal Controller', () => {
                 .post(`/api/v1/users/${createdUserId}/meals/${mealId}/ratings`)
                 .send(rateData)
                 .then(function (res) {
+                  console.log(res.body)
                   expect(res).to.have.status(200);
                   expect(res).to.be.json;
                   expect(res.body).to.be.an('object')
@@ -176,12 +174,7 @@ describe('Meal Controller', () => {
 
   describe('delete Function', () => {
     it('should delete one Meal', (done) => {
-      Meal
-        .find({
-          where: {
-            title: mealData.title
-          }
-        })
+      Meal.find({where: {title: mealData.title}})
         .then(function (meal) {
           const mealId = meal.dataValues.id
           chai.request(index)

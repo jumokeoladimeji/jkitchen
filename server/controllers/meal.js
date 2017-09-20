@@ -1,11 +1,11 @@
 const Meal = require('../models').Meal;
 const redis = require('redis');
 let client
-if (process.env.REDIS_URL) {
-  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
-} else {
-  client = redis.createClient();
-}
+// if (process.env.REDIS_URL) {
+//   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+// } else {
+client = redis.createClient();
+// }
 const Rating = require('../models').Rating;
 const Comment = require('../models').Comment;
 const MealOrderDetail = require('../models').MealOrderDetail
