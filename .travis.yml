@@ -1,25 +1,31 @@
 language: node_js
 node_js:
-  - 6
-  - node
+- 6
+- node
 sudo: false
 cache:
   directories:
-    - "node_modules"
-
+  - node_modules
 services:
-  - postgresql
-  - redis-server
-
+- postgresql
+- redis-server
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 before_script:
-  - psql -c 'create database jkitchen;' -U postgres
-  - npm install -g bower istanbul sequelize sequelize-cli
-  - bower install
-
-script: 
-  - istanbul cover ./node_modules/mocha/bin/_mocha tests/server/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
-  
+- psql -c 'create database jkitchen;' -U postgres
+- npm install -g bower istanbul sequelize sequelize-cli
+- bower install
+script:
+- istanbul cover ./node_modules/mocha/bin/_mocha tests/server/*.js --report lcovonly
+  -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  && rm -rf ./coverage
+deploy:
+  provider: heroku
+  skip_cleanup: true
+  api_key:
+    secure: cX9tftMlCt1xl6bV8b5ehSic3ihigd68QvQIVoxuOuyNeTr1yVGqMI+dF29MoMqU/P4zW2jJbgoZMwNn4wYaKvfhVztanVuneknD1vkZMppwbEJ5sj+r17Tdg0jzvZHWomEoW265MC722H7aCNyQVS7qDRBdWAVs+Y44LHp6cvJZNsCHidFarcHJg39p6EkyfAUTNlRuPJt8hhnV9aNjClTP1AX1es+XOZibvD1NpLLwDMVvXH/U0JVa/gIECkoMZTWPAah9yHImooyc3N7U5Fpy4NfjUkx8L8iRYGXgrvffk+glsZD5PERCRMRxp+vHp6Co82dBG2wk3eDP4s1Q+iKGSSSDTueJbWpw/wQJy98YCXD79zr0yyF4pC4DanDnvwASAA+8El2Nl3v/vtnZHaU/0j8yPAp1yNVdZpQkvRBRgkPHhnaiTANPgOrIEApwZQBNfIEsoy8mUqkJujHQhdKqIeTg4lX5Putha86E/3t6IWSbWexXbo3jr4KvaidnxLLQI778aCeuTuSw6apupqnVWT82AE6KO17xSVDDfvf+sLQjgPVJBtgyK5gfYxCiEBu0NQwLql3HFaJ/RY2NwqmGhoQ4hnBBauBbA9rK3hplZ3kUeUhW4Ox9yRTX7vOX0YeWRiFNeQwbS+ICeTrx8heP+/VI98R8oIAtlrcKVB4=
+  app: jkitchen
+  on:
+    repo: andela-joladimeji/jkitchen
+    branch: master
