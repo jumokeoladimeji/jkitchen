@@ -4,7 +4,12 @@ const expect = chai.expect;
 const assert = chai.assert;
 const index = require('../../index');
 const redis = require('redis')
-const client = redis.createClient();
+let client
+if (process.env.REDIS_URL) {
+  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+} else {
+  client = redis.createClient();
+}
 
 const Meal = require('../../server/models').Meal;
 const User = require('../../server/models').User;
@@ -31,7 +36,7 @@ describe('Meal Controller', () => {
     });
     it('should post a Meal', (done) => {
       chai.request(index)
-        .post('/api/meals')
+        .post('/api/v1/meals')
         .send(mealData)
         .then(function (res) {
           expect(res).to.have.status(200);
@@ -44,7 +49,7 @@ describe('Meal Controller', () => {
   describe('list Function', () => {
     it('should return all Meals', (done) => {
       chai.request(index)
-        .get('/api/meals')
+        .get('/api/v1/meals')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -65,7 +70,7 @@ describe('Meal Controller', () => {
         .then(function (meal) {
           const mealId = meal.dataValues.id
           chai.request(index)
-            .get(`/api/meals/${mealId}`)
+            .get(`/api/v1/meals/${mealId}`)
             .then(function (res) {
               expect(res).to.have.status(200);
               expect(res).to.be.json;
@@ -78,7 +83,7 @@ describe('Meal Controller', () => {
   });
 
   describe('MostPopularMeals Function', () => {
-    const mealOne = { title: 'Suya meat', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'roasted assorted meat' }
+    const mealOne = { title: 'Egg and bread', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'roasted assorted meat' }
     const mealTwo = { title: 'ofada rice', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'rice and stew with assorted meat' }
     const mealThree = { title: 'Jollof rice', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'nigerian jollof' }
     const mealFour = { title: 'Amala and okra', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'amala' }
@@ -100,10 +105,10 @@ describe('Meal Controller', () => {
             .then(function (meal) {
               const mealOneId = meal.dataValues.id
               chai.request(index)
-                .get(`/api/meals/${mealOneId}`)
+                .get(`/api/v1/meals/${mealOneId}`)
                 .then(function (response) {
                   chai.request(index)
-                    .get('/api/popularMeals')
+                    .get('/api/v1/popularMeals')
                     .then(function (res) {
                       expect(res).to.have.status(200);
                       expect(res.body).to.be.an('array')
@@ -122,10 +127,10 @@ describe('Meal Controller', () => {
             title: mealData.title
           }
         })
-        .then(function (meal){
+        .then(function (meal) {
           const mealId = meal.dataValues.id
           chai.request(index)
-            .put(`/api/meals/${mealId}`)
+            .put(`/api/v1/meals/${mealId}`)
             .send({image: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg'})
             .then(function (res) {
               expect(res).to.have.status(200);
@@ -156,7 +161,7 @@ describe('Meal Controller', () => {
               let mealId = meal.dataValues.id
               let rateData = {ratings: 3}
               chai.request(index)
-                .post(`/api/users/${createdUserId}/meals/${mealId}/ratings`)
+                .post(`/api/v1/users/${createdUserId}/meals/${mealId}/ratings`)
                 .send(rateData)
                 .then(function (res) {
                   expect(res).to.have.status(200);
@@ -180,7 +185,7 @@ describe('Meal Controller', () => {
         .then(function (meal) {
           const mealId = meal.dataValues.id
           chai.request(index)
-            .delete(`/api/meals/${mealId}`)
+            .delete(`/api/v1/meals/${mealId}`)
             .then(function (res) {
               expect(res).to.have.status(200);
               expect(res).to.be.json;

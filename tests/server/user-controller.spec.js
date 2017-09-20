@@ -40,7 +40,7 @@ describe('User Controller',  () => {
 
     it("should create users", function(done) {
       chai.request(index)
-        .post('/api/user/signup')
+        .post('/api/v1/user/signup')
         .send(userData)
         .then(function(res) {
           expect(res).to.have.status(200);
@@ -54,7 +54,7 @@ describe('User Controller',  () => {
   describe('Sign In Function', function(done) {
     it("should sign in users", (done) => {
       chai.request(index)
-        .post('/api/user/signin')
+        .post('/api/v1/user/signin')
         .send({password:userData.password, email: userData.email})
         .then(function(res) {
           expect(res).to.have.status(200);
@@ -75,7 +75,7 @@ describe('User Controller',  () => {
       .then(function(user){
         const userId = user.dataValues.id
         chai.request(index)
-          .put(`/api/user/me/${userId}/edit`)
+          .put(`/api/v1/user/me/${userId}/edit`)
           .send({username:'Jim Jim'})
           .then(function(res) {
             expect(res).to.have.status(200);
