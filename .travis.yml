@@ -6,14 +6,12 @@ sudo: false
 cache:
   directories:
   - node_modules
-
 before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 before_script:
 - npm install -g bower istanbul
 - bower install
-
 deploy:
   provider: heroku
   skip_cleanup: true
@@ -23,3 +21,6 @@ deploy:
   on:
     repo: andela-joladimeji/jkitchen
     branch: master
+env:
+  matrix:
+    secure: LwsFya3D8+Sf6+K7YsQVrmNZc9WEnbgBXb9Z2sJM9ILL21Qf+tnKdEnmeagneDZ2VGfTWhW3KFiACohddW7cmzvRNLA6KGzehfNdfYLrd0rp2ENJOjrDWED2fRxD/KDjF/6ICvYhD8jPbPt5S2qJNeg+YBCP7FUEfa+/sOmyg4llJlxGAGppnV/K9n0cXdufho8g1iYk4kwzW8wejmsW/jDQ7PIB/zbNyvC3opuymP9aCcGJ2X6cHeqNxTpToEWLOsQ/1Dsxy36HAZhcCnqO2UCOeOEhT9N0tS3EW35HBQQq3jn7GemmqwuiHDXn4NiKlYZWAzuRZJiyYuXvxd5IwX8KJUrOeXE6M7xur4DDTzcOEr+tdY3i/6tFEI0DBLigO/Q3EVuaoX3lkkeeFjTCnNMTV+IQEoTiH1kuizNx28brvHq0IdFeDc4LscwZajDF5zYJX6grnezMvphYlIWhj3k/gjszKK5Qu7+Zws+cK4F8iGn8JTAxdZpCxjoxm632KgL17wIC5zgPixkSllUq+uwR/oQ+dF26vhZZmx2NRbnlyCENQMmD+7T4LH1f0fyHDrCw91LMQstiIP8mUsshyE93QnJcjGR/KAGFwAXVu0lbyV7bAkgrv9AWqqqkgIiJhYYpF4Hl2q1vHmyzJhdEHW4Lt7ivKke1Ukr7LLzT9IU=

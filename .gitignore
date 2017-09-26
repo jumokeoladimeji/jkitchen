@@ -4,4 +4,4 @@ node_modules
 reports
 coverage
 npm-debug.log
-npm-debug.log.*
+npm-debug.log*

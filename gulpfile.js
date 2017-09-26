@@ -1,25 +1,34 @@
 const gulp = require('gulp')
-    gulpMocha = require('gulp-mocha'),
-    istanbul = require('gulp-istanbul'),
-    minify = require('gulp-minify');
-
+const gulpMocha = require('gulp-mocha')
+const istanbul = require('gulp-istanbul')
+const  minify = require('gulp-minify');
+const karma = require('gulp-karma');
 
 gulp.task('serve', () => {
  require('./index.js');
 });
 
+var allFiles = [
+    'public/bower_components/angular/angular.min.js',
+    'public/bower_components/angular-mocks/angular-mocks.js',
+    'public/app.js',
+    'public/scripts/controllers/user-controller.js',
+    'public/scripts/**/*.js',
+    'tests/public/*.spec.js'
+];
 
-gulp.task('server-test', () => {
-    return gulp.src('server/**/*.js')
-       .pipe(istanbul())
-        .on('end', () => {
-            gulp.src('tests/server/*.js')
-                .pipe(gulpMocha({
-                  reporter: 'spec'
-                }))
-                .pipe(istanbul.writeReports('reports')); 
-    });
+gulp.task('test', function(coverage) {
+  gulp.src(allFiles)
+  .pipe(karma({
+  configFile: 'karma.conf.js',
+  action: 'run'
+}))
+.on('error', function(err) {
+ // Make sure failed tests cause gulp to exit non-zero
+   throw err;
+ });
 });
+
 
 
 gulp.task('compress', () =>  {
