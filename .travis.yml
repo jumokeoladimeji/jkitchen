@@ -12,6 +12,7 @@ before_install:
 before_script:
 - npm install -g bower istanbul
 - bower install
+script: gulp test
 deploy:
   provider: heroku
   skip_cleanup: true
